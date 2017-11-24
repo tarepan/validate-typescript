@@ -1,0 +1,27 @@
+{
+  "name": "validate-typescript",
+  "version": "1.0.0",
+  "description": "Extensible schema based validator that supports typescript typing.",
+  "main": "dist/index.js",
+  "scripts": {
+    "test": "cd test && tsc && node ./dist/test"
+  },
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/Dekryptonite/validate-typescript.git"
+  },
+  "keywords": [
+    "validate",
+    "validator",
+    "validation",
+    "typescript",
+    "schmea",
+    "javascript"
+  ],
+  "author": "Dekryptonite",
+  "license": "MIT",
+  "bugs": {
+    "url": "https://github.com/Dekryptonite/validate-typescript/issues"
+  },
+  "homepage": "https://github.com/Dekryptonite/validate-typescript#readme"
+}
