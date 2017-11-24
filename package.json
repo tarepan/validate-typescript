@@ -3,6 +3,7 @@
   "version": "1.0.0",
   "description": "Extensible schema based validator that supports typescript typing.",
   "main": "dist/index.js",
+  "types": "src/index.d.ts",
   "scripts": {
     "test": "cd test && tsc && node ./dist/test"
   },
