@@ -1,6 +1,6 @@
 import * as assert from './assertions';
 import * as convert from './conversions';
-import { Validator } from './validators';
+import { Validator, Options } from './validators';
 
 export function propRef(prop: string, validator: string): string {
     return `[${validator}]: ${prop}`

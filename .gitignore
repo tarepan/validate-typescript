@@ -1,5 +1,9 @@
+# Test
+test/dist
+
 # Typescript
-dist/
+dist/*.js
+dist/*.js.map
 
 # Logs
 logs

@@ -1,13 +1,18 @@
+
+
+
 import { Email, ID, RegEx, Type, Options, Optional, Nullable, validate } from '../src/index';
 
 console.log("Starting Test");
 
 class Test {
+    id: number;
 }
-    
+
+
 const oschema = {
     example_id: ID(),
-    string_prop: Type(Boolean),
+    string_prop: Type(Number),
     number_prop: Type(Test),
     test: Options([0, Type(Date), "asd", RegEx(/12/), ID()]),
     id_array: [Email(), [Type(Number)], RegEx(/234/)],
@@ -23,8 +28,7 @@ const oschema = {
 const schema = {
     id: ID(),
     field_name: Optional({
-        name2: true,
-        gender: Options(['m', 'f', 'o'])
+        name2: false,   
     }),
     tp: Type(Test),
     rx: RegEx(/123/)
@@ -33,10 +37,10 @@ const schema = {
 
 try {
     const input = validate(schema, {
-        id: '2', 
+        id: 1, 
         field_name: {
-            name2: true, 
-            gender: 'f'
+            name2: false, 
+            gender: 'm'
         }, 
         tp: new Test(), 
         rx: '123'
