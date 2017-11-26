@@ -2,9 +2,9 @@ export function nullOrUndef(value: any) {
     return (value === null || typeof value === 'undefined');
 }
 
-export function objectType(obj: {}): string | null {
+export function objectType(obj: {}): string | undefined {
     if (nullOrUndef(obj) || nullOrUndef(obj.constructor))
-        return null;
+        return undefined;
     else return obj.constructor.name;
 }
 

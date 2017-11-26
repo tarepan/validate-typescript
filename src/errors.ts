@@ -1,7 +1,7 @@
 import { objToStr } from './common';
 
 export abstract class ValidationError extends Error {
-    abstract get reason(); 
+    abstract get reason(): string; 
 }
 
 export class ConversionError extends ValidationError {
@@ -34,7 +34,7 @@ export class AssertionError extends ValidationError {
     }
 }
 
-export class CustomValidationError extends ValidationError {
+export class ValidatorError extends ValidationError {
 
     constructor(
         public validator: string,
@@ -55,5 +55,19 @@ export class CustomValidationError extends ValidationError {
             response += this.err.message;
         }
         return response;
+    }
+}
+
+export class NotMatchAnyError extends ValidationError {
+
+    constructor(
+        public value: any,
+    ) {
+        super();
+        this.message = this.reason;
+    }
+
+    get reason() {
+        return `${objToStr(this.value)} does not match any validators.`;
     }
 }

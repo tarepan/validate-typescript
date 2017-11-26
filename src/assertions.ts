@@ -1,59 +1,91 @@
-import { objToStr } from './common';
-import { AssertionError } from './error';
+import { objToStr, objectType } from './common';
+import { AssertionError } from './errors';
 
-export function Assert(condition: boolean, value: any, assertion: string, details: string) {
-    if (!condition) throw new AssertionError(value, assertion, details);
+export function Assert(condition: boolean, invert: boolean, value: any, assertion: string, 
+                       details: string) {
+    let name = ((invert) ? 'isNot' : 'is') + assertion.slice(2);
+    let messagePrefix = (invert) ? 'is' : 'is not';
+    let message = `${messagePrefix} ${details}`;
+    if ((invert) ? condition : !condition) throw new AssertionError(value, name, message);
 }
 
-export function isEqual(target: any, value: any) {
-    Assert(target === value, value, isEqual.name, `is not equal to ${objToStr(target)}`);
+export function isSameType(target: any, value: any, invert: boolean = false) {
+    let targetType = objectType(target);
+    let valueType  = objectType(value);
+    Assert(targetType === valueType, invert, valueType, isSameType.name, 
+           `the same type as ${objToStr(targetType)}`);
 }
 
-export function isBoolean(value: string) {
-    Assert(typeof value === 'boolean', value, isBoolean.name, 'is not a boolean');
+export function isSameTypeName(target: string, value: string, invert: boolean = false) {
+    Assert(target === value, invert, value, isSameTypeName.name, 
+           `the same type as ${objToStr(target)}`);
 }
 
-export function isString(value: string) {
-    Assert(typeof value === 'string', value, isString.name, 'is not a string');
+export function isEqual(target: any, value: any, invert: boolean = false) {
+    Assert(target === value, invert, value, isEqual.name, `equal to ${objToStr(target)}`);
 }
 
-export function isNumber(value: number) {
-    Assert(!Number.isNaN(value), value, isNumber.name, 'is NaN');
+export function isSymbol(value: string, invert: boolean = false) {
+    Assert(typeof value === 'symbol', invert, value, isSymbol.name, 'a symbol');
 }
 
-export function isInt(value: number) {
-    Assert(Number.isInteger(value), value, isInt.name, 'is not an integer');
+export function isBoolean(value: string, invert: boolean = false) {
+    Assert(typeof value === 'boolean', invert, value, isBoolean.name, 'a boolean');
 }
 
-export function isFloat(value: number) {
+export function isString(value: string, invert: boolean = false) {
+    Assert(typeof value === 'string', invert, value, isString.name, 'a string');
+}
+
+export function isNumber(value: number, invert: boolean = false) {
+    Assert(!Number.isNaN(value), invert, value, isNumber.name, 'a number');
+}
+
+export function isInt(value: number, invert: boolean = false) {
+    Assert(Number.isInteger(value), invert, value, isInt.name, 'an integer');
+}
+
+export function isFloat(value: number, invert: boolean = false) {
     // todo update
-    Assert(!Number.isNaN(value), value, isFloat.name, 'is not an float');
+    Assert(!Number.isNaN(value), invert, value, isFloat.name, 'a float');
 }
 
-export function isGreaterThanZero(value: number) {
-    Assert(value > 0, value, isGreaterThanZero.name, 'is not >= 0');
+export function isEqualTo(target: number, value: number, invert: boolean = false) {
+    Assert(value == target, invert, value, isEqualTo.name, `== ${target}`);
 }
 
-export function isArray(value: any[]) {
-    Assert(Array.isArray(value), value, isArray.name, 'is not an array');
+export function isGreaterThan(target: number, value: number, invert: boolean = false) {
+    Assert(value > target, invert, value, isGreaterThan.name, `> ${target}`);
 }
 
-export function isNull(value: any) {
-    Assert(value === null, value, isNull.name, 'is not null');
+export function isGreaterThanOrEqualTo(target: number, value: number, invert: boolean = false) {
+    Assert(value >= target, invert, value, isGreaterThanOrEqualTo.name, `>= ${target}`);
 }
 
-export function isNonNullObject(value: any) {
-    Assert(typeof value === 'object' && value !== null, value, isNonNullObject.name, 'is not an object or null');
+export function isLessThanOrEqualTo(target: number, value: number, invert: boolean = false) {
+    Assert(value <= target, invert, value, isLessThanOrEqualTo.name, `>= ${target}`);
 }
 
-export function isUndefined(value: number) {
-    Assert(typeof value === 'undefined', value, isUndefined.name, 'is not undefined');
+export function isLessThan(target: number, value: number, invert: boolean = false) {
+    Assert(value < target, invert, value, isLessThan.name, `< ${target}`);
 }
 
-export function isDefined(value: number) {
-    Assert(typeof value !== 'undefined', value, isDefined.name, 'is undefined');
+export function isArray(value: any[], invert: boolean = false) {
+    Assert(Array.isArray(value), invert, value, isArray.name, 'an array');
 }
 
-export function isRegEx(regEx: RegExp, value: string) {
-    Assert(regEx.test(value), value, isRegEx.name, `does not match RegExp ${regEx}`);
+export function isNull(value: any, invert: boolean = false) {
+    Assert(value == null, invert, value, isNull.name, 'null');
+}
+
+export function isObject(value: any, invert: boolean = false) {
+    Assert(typeof value === 'object', invert, value, isObject.name, 'an object');
+}
+
+export function isUndefined(value: number, invert: boolean = false) {
+    Assert(typeof value === 'undefined', invert, value, isUndefined.name, 'undefined');
+}
+
+export function isRegEx(regEx: RegExp, value: string, invert: boolean = false) {
+    Assert(regEx.test(value), invert, value, isRegEx.name, `a regular expression match`);
 }

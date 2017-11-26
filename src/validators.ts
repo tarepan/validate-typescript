@@ -1,5 +1,13 @@
 import * as sym from './symbols';
 import { nullOrUndef } from './common';
+import { validate } from './validate';
+
+export enum ValidationOptions {
+    any = 0,
+    all,
+}
+
+export type ValidationMethod<T> = (input: any) => T;
 
 export function Type<A, B>(ctor: ((() => A) | (new () => B))): B {
         
@@ -9,31 +17,43 @@ export function Type<A, B>(ctor: ((() => A) | (new () => B))): B {
     let result = <any>(() => {});
     result[sym.Validator] = sym.TypeValidator;
     result[sym.TypeValidator] = ctor.prototype.constructor.name;
-    
     return result as B;
 }
 
-export function Options<T>(validators: T[]): T {
+export function Options<T>(schemas: T[], name: string = Options.name, 
+                           option: ValidationOptions = ValidationOptions.any): T {
     let result = <any>(() => {});
     result[sym.Validator] = sym.OptionsValidator;
-    result[sym.OptionsValidator] = validators;
+    result[sym.OptionsValidator] = { schemas, option };
+    result[sym.Metadata] = { name };
     return result as T;
 }
 
-export function Optional<T>(validator: T): T | undefined {
-    return Options([validator, undefined]);
+export function Any<T>(schemas: T[], name: string = Any.name): T {
+    return Options(schemas, name, ValidationOptions.any);
 }
 
-export function Nullable<T>(validator: T): T | null {
-    return Options([validator, null]);
+export function All<T>(schemas: T[], name: string = All.name): T {
+    return Options(schemas, name, ValidationOptions.all);
 }
 
-export function Validator<T>(method: (input: any, prop: string) => T, validator: string): T {
+export function Optional<T>(schema: T, name: string = Optional.name): T | undefined {
+    return Options([schema, undefined], name);
+}
+
+export function Nullable<T>(schema: T, name: string = Nullable.name): T | null {
+    return Options([schema, null], name);
+}
+
+export function Validator<T>(method: ValidationMethod<T>, name: string = Validator.name): T {
     const result = <any>(() => {});
     result[sym.Validator] = sym.CustomValidator;
     result[sym.CustomValidator] = method;
-    result[sym.Metadata] = validator;
+    result[sym.Metadata] = { name };
     return result as T;
 }
 
-
+export function Alias<T>(validator: T, name: string = Alias.name): T {
+    (<any>validator)[sym.Metadata].name = name;
+    return validator;
+}
