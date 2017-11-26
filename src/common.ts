@@ -7,3 +7,7 @@ export function objectType(obj: {}): string | null {
         return null;
     else return obj.constructor.name;
 }
+
+export function objToStr(obj: any): string {
+    return JSON.stringify(obj, null, '  ');
+}

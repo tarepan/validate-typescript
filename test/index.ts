@@ -26,6 +26,7 @@ const oschema = {
 };
 
 const schema = {
+    test: 1,
     id: ID(),
     field_name: Optional({
         name2: false,   
@@ -37,15 +38,15 @@ const schema = {
 
 try {
     const input = validate(schema, {
-        id: 1, 
+        test: 1,
+        id: '0',
         field_name: {
-            name2: false, 
-            gender: 'm'
-        }, 
+            name2: false
+        },
         tp: new Test(), 
         rx: '123'
     });
-    console.log(input)
+    console.log(input);
 } catch (error) {
     console.log(error);
 }

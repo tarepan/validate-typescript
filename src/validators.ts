@@ -28,10 +28,11 @@ export function Nullable<T>(validator: T): T | null {
     return Options([validator, null]);
 }
 
-export function Validator<T>(method: (input: any, prop: string) => T): T {
+export function Validator<T>(method: (input: any, prop: string) => T, validator: string): T {
     const result = <any>(() => {});
     result[sym.Validator] = sym.CustomValidator;
     result[sym.CustomValidator] = method;
+    result[sym.Metadata] = validator;
     return result as T;
 }
 

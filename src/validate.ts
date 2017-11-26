@@ -1,6 +1,7 @@
 import * as assert  from './assertions';
 import * as sym from './symbols';
 import { objectType } from './common';
+import { CustomValidationError } from './error';
 
 export function validateObject<T>(schema: T, input: any, name: string): T {
 
@@ -12,13 +13,13 @@ export function validateObject<T>(schema: T, input: any, name: string): T {
 
     // Array Validation
     if (Array.isArray(schema)) {
-        assert.isArray(input, name);
+        assert.isArray(input);
         let memIdx = 0;
         for (const member of input) {
             let idx = 0;
             for (const prop of schema) {
                 try {
-                    input[memIdx] = validate(prop, member, `${name}[${idx++}]`);
+                    input[memIdx] = validateRecursive(prop, member, `${name}[${idx++}]`);
                     break;
                 } catch {
                     if (idx === schema.length) {
@@ -31,9 +32,9 @@ export function validateObject<T>(schema: T, input: any, name: string): T {
 
     // Object Validation
     } else {
-        assert.isNonNullObject(input, name);
+        assert.isNonNullObject(input);
         for (const prop of Object.getOwnPropertyNames(schema)) {
-            input[prop] = validate((<any>schema)[prop], input[prop], `${name}.${prop}`);
+            input[prop] = validateRecursive((<any>schema)[prop], input[prop], `${name}.${prop}`);
         }
     }
 
@@ -58,7 +59,7 @@ export function validateFunction<T extends () => {}>(schema: T, input: any, name
         for (const subSchema of (<any>schema)[sym.OptionsValidator]) {
             try {
                 idx++;
-                input = validate(subSchema, input, name);
+                input = validateRecursive(subSchema, input, name);
                 break;
             }
             catch {
@@ -71,7 +72,25 @@ export function validateFunction<T extends () => {}>(schema: T, input: any, name
 
     // Custom Validation
     else if ((<any>schema)[sym.Validator] === sym.CustomValidator) {
-        input = (<any>schema)[sym.CustomValidator](input, name);
+        try {
+            input = (<any>schema)[sym.CustomValidator](input, name);
+        } catch(ex) {
+            throw new CustomValidationError(
+                (<any>schema)[sym.Metadata],
+                name,
+                input,
+                ex,
+            );
+            /*
+            Error(JSON.stringify({
+                validator: ,
+                field: name,
+                assertion: ex.assertion,
+                value: ex.value,
+                message: ex.message,
+            }, null, '  '));*/
+            //throw new Error(`in validator: ${(<any>schema)[sym.Metadata]}\n${ex.message}`)
+        }
     }
 
     return input;
@@ -79,20 +98,21 @@ export function validateFunction<T extends () => {}>(schema: T, input: any, name
     
     
 export function validateString(schema: string, input: any, name: string): string {
-    assert.isString(input, name);
-    assert.isEqual(schema, input, name);
+    // try catch name
+    assert.isString(input);
+    assert.isEqual(schema, input);
     return input;
 };
 
 export function validateNumber(schema: number, input: any, name: string): number {
-    assert.isNumber(input, name);
-    assert.isEqual(schema, input, name);
+    assert.isNumber(input);
+    assert.isEqual(schema, input);
     return input;
 };
 
 export function validateBoolean(schema: boolean, input: any, name: string): boolean {
-    assert.isBoolean(input, name);
-    assert.isEqual(schema, input, name);
+    assert.isBoolean(input);
+    assert.isEqual(schema, input);
     return input;
 };
 
@@ -102,7 +122,7 @@ export function validateSymbol(schema: symbol, input: any, name: string): symbol
 };
 
 export function validateUndefined(schema: undefined, input: any, name: string): undefined {
-    assert.isUndefined(input, name);
+    assert.isUndefined(input);
     return input;
 };
 
@@ -111,10 +131,7 @@ export function validateDefault<T>(schema: T, input: any, name: string): T {
     return input;
 };
 
-export function validate<T>(schema: T, input: any, name: string = 'input'): T {
-
-    // check schema is not null
-//    assert.isNonNullObject(input, name);
+function validateRecursive<T>(schema: T, input: any, name: string): T {
 
     if (typeof schema === 'object') {
         input = validateObject(schema, input, name);
@@ -133,6 +150,20 @@ export function validate<T>(schema: T, input: any, name: string = 'input'): T {
     } else {
         input = validateDefault(schema, input, name);
     }
+
+    return input;
+}
+
+export function validate<T>(schema: T, input: any, name: string = 'input'): T {
+
+    try {
+        validateRecursive(schema, input, name);
+    } catch(ex) {
+        //if ()
+        //let s = 's';
+ //       throw new Error(ex.message);
+        throw new Error(ex.message);        
+    }   
 
     return input;
 }

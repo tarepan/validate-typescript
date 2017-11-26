@@ -1,0 +1,13 @@
+export function isEqual(target: any, value: any, name: string): never;
+export function isBoolean(value: string, name: string): never;
+export function isString(value: string, name: string): never;
+export function isNumber(value: number, name: string): never;
+export function isInt(value: number, name: string): never;
+export function isFloat(value: number, name: string): never;
+export function isPositive(value: number, name: string): never;
+export function isArray(value: any[], name: string): never;
+export function isNull(value: any, name: string): never;
+export function isNonNullObject(value: any, name: string): never;
+export function isUndefined(value: number, name: string): never;
+export function isDefined(value: number, name: string) : never;
+export function isRegEx(regEx: RegExp, value: string, name: string): never;
