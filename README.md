@@ -10,12 +10,29 @@ This package strives meet the following criteria:
 - [extensible](#custom-validators)
 - [convertable](#converters)
 
+# Installation
+
+    > npm install validate-typescript
+
+# Imports
+
+```ts
+import { ... } from 'validate-typescript';
+import { ... } from 'validate-typescript/validators';
+import { ... } from 'validate-typescript/extensions';
+import { ... } from 'validate-typescript/assertions';
+import { ... } from 'validate-typescript/conversions';
+import { ... } from 'validate-typescript/errors';
+```
+
 # Getting Started
+
+The example below represents a basic subset of the inline validations that can be applied.
 
 ## Example
 
 ```ts
-import { Email, ID, RegEx, Type, Options, Optional, Nullable, Any, All, validate } from 'validate-typescript';
+import { Email, ID, RegEx, Type, Options, Optional, Nullable, Alias, Any, All, validate } from 'validate-typescript';
 
 function ZaPhoneNumber() {
     return Alias(RegEx(/^((\+27|0)\d{9})$/), ZaPhoneNumber.name);
@@ -68,7 +85,7 @@ try {
 
 # Validators
 
-The following examples of `validate-typescript` schemas, illustrate the different validation methods.
+The following examples of `validate-typescript` schemas illustrate the different validation methods.
 
 **Note:** the comment `// type: TypeName` following the validator explicitly specifies the resultant typescript type inferred by the typescipt transpiler. This relates back to the *strongly typed* criteria.
 
@@ -114,7 +131,7 @@ let schema = {
 
 ## Nested Object Validators
 
-TODO: description
+Expects a nested object that matches the nested schema.
 
 ```ts
 let schema = {
@@ -130,7 +147,9 @@ let schema = {
 
 ## Array Validators
 
-TODO: description
+Expects an array that matches the contents of the array schema.
+
+**Note:** Multiple validators in the array are treated as boolean-or ([any](#any-or-all-validators)).
 
 ```ts
 let schema = {
@@ -145,7 +164,7 @@ let schema = {
 
 ## Options Validators
 
-TODO: description
+Expects [any](#any-or-all-validators) or [all](#any-or-all-validators) of the validation options to match.
 
 ```ts
 let schema = {
@@ -167,7 +186,7 @@ let schema = {
 
 ## Any or All Validators
 
-TODO: description
+Any represents boolean-or of the validation options while all represents boolean-and.
 
 ```ts
 let schema = {
@@ -178,12 +197,19 @@ let schema = {
 
     // validate all options
     allOptions: Options([RegEx(/.+@gmail.com/), Email()], ValidationOptions.all) // type: number | string
-    alsoAll: Any([RegEx(/.+@gmail.com/), Email()])                               // type: number | string
+    alsoAll: All([RegEx(/.+@gmail.com/), Email()])                               // type: number | string
 }
 ```
 ## Validation
 
-- validate method
+```
+try {
+    const input = validate(schema, input);
+    console.log(input); // no validation error
+} catch (error) {
+    console.log(error); // validation error
+}
+```
 
 TODO: complete
 
@@ -197,14 +223,59 @@ TODO: complete
 
 ## Errors
 
-TODO: complete
+Custom validation errors are implemented. It is ulikely that you will need to extend these but there may be future extensions.
 
-## Custom Validators
+For example, supporting JSON formatted validation errors for easier parsing and logging.
 
-- Alias
-- Validator
+## Custom Validators (Extensions)
 
-TODO: complete
+Validators can be customized using converters, assertions as well as other custom validators (extensions).
+
+### Alias
+
+Aliasing is a method of aliasing a custom validator, possibly with inputs.
+
+```ts
+import { RegEx, Alias } from 'validate-typescript';
+
+export function ZaPhoneNumber() {
+    return Alias(RegEx(/^((\+27|0)\d{9})$/), ZaPhoneNumber.name);
+}
+```
+
+### ID
+
+This example illustrates the use of both a converter and an assertion.
+
+```ts
+import { Validator } from 'validate-typescript';
+import * as convert from 'validate-typescript/conversions';
+
+export function ID() {
+    return Validator((input: any): number => {
+        const value = convert.toInt(input);
+        assert.isGreaterThan(0, value);
+        return value;
+    }, ID.name);
+}
+```
+
+### RegEx
+
+This example illustrates only the use of assertions.
+
+```ts
+import { Validator } from 'validate-typescript';
+import * as assert from 'validate-typescript/assertions';
+
+export function RegEx(regEx: RegExp) {
+    return Validator((input: any): string => {
+        assert.isString(input);
+        assert.isRegEx(regEx, input);
+        return input;
+    }, RegEx.name);
+}
+```
 
 ## Recommendations
 
