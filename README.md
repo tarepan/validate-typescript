@@ -3,14 +3,12 @@ Extensible schema based validator that supports typescript typing.
 
 This package strives meet the following criteria:
 
-- lightweight
-- inline
-- strongly typed
-- simple
-- extensible
-- convertable
-
-TODO: Add hyperlinks
+- [lightweight](#example)
+- [inline](#example)
+- [simple](#example)
+- [strongly typed](#validators)
+- [extensible](#custom-validators)
+- [convertable](#converters)
 
 # Getting Started
 
