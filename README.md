@@ -276,13 +276,13 @@ Converters are intended to be extended.
 
 Custom validation errors are implemented. It is ulikely that you will need to extend these but there may be future extensions.
 
-For example, supporting JSON formatted validation errors for easier parsing and logging.
-
 - **ValidationError:** Abstract base class for all validation errors.
 - **ConversionError:** Type of all the conversion errors.
 - **AssertionError:** Type of all the assertion errors.
-- **ValidationError::** Type of all the validation errors.
+- **ValidationError:** Type of all the validation errors.
 - **NotMatchAnyError:** Type of error thrown when `Any` does not match any of the provided validation options.
+
+For example, supporting JSON formatted validation errors for easier parsing and logging.
 
 ## Custom Validators (Extensions)
 
