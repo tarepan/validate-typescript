@@ -12,7 +12,7 @@ This package strives meet the following criteria:
 
 # Installation
 
-    > npm install validate-typescript
+    npm install validate-typescript
 
 # Imports
 
@@ -202,7 +202,9 @@ let schema = {
 ```
 ## Validation
 
-```
+**Note:** the return of `validate`, in this case `input`, will inherit the typescript typing of the schema, thus strongly-typed.
+
+```ts
 try {
     const input = validate(schema, input);
     console.log(input); // no validation error
@@ -211,15 +213,23 @@ try {
 }
 ```
 
-TODO: complete
-
 ## Assertions
 
-TODO: complete
+|Assertion|Description|
+|:-:|:-:|
+|||
 
 ## Converters
 
-TODO: complete
+All converters attempt to convert the input to a specific type and throw a `ConversionError` if the conversion fails.
+
+|Convertion|Input Types|
+|:-:|:-:|
+|toInt| `number`, `string` |
+|toNumber| `number`, `string` |
+|toBoolean| `boolean`, `string` |
+
+Converters are intended to be extended.
 
 ## Errors
 
