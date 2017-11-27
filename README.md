@@ -215,21 +215,62 @@ try {
 
 ## Assertions
 
+Assertions allow enforcing of basic validation conditions and form the atomic building blocks of custom validators. Upon failure, assertions throw an `AssertionError`.
+
+**Note:** All assertions take a flag allowing conditional inversion.
+
+Assertions are intended to be extended.
+
+### Typed Assertions
+
 |Assertion|Description|
 |:-:|:-:|
-|||
+|isSameType|Assert type equality of two inputs.|
+|isSameTypeName|Asserts type name equality of two inputs.|
+|isSymbol|Asserts symbol type input.|
+|isBoolean|Asserts boolean type input.|
+|isString|Asserts string type input.|
+|isNumber|Asserts number type input.|
+|isArray|Asserts array type input.|
+|isNull|Asserts null type input.|
+|isObject|Asserts object type input.|
+|isUndefined|Asserts undefined type input.|
+
+### Numeric Assertions
+
+|Assertion|Description|
+|:-:|:-:|
+|isInt|Asserts integer input.|
+|isFloat|Asserts float input.|
+
+### Operational Assertions
+
+|Assertion|Description|
+|:-:|:-:|
+|isEqualTo|Asserts equality (==) of two inputs.|
+|isGreaterThan|Asserts greater than relation (>) of two inputs.|
+|isLessThan|Asserts less than relation (<) of two inputs.|
+|isGreaterThanOrEqualTo|Asserts greater than or equal to relation (>=) of two inputs.|
+|isLessThanOrEqualTo|Asserts less than or equal to relation (<=) of two inputs.|
+
+### Misc Assertions
+
+|Assertion|Description|
+|:-:|:-:|
+|isEqual|Asserts typed equality (===) of two inputs.|
+|isRegEx|Asserts RegExp matching input.|
 
 ## Converters
 
 All converters attempt to convert the input to a specific type and throw a `ConversionError` if the conversion fails.
 
-|Convertion|Input Types|
-|:-:|:-:|
-|toInt| `number`, `string` |
-|toNumber| `number`, `string` |
-|toBoolean| `boolean`, `string` |
-
 Converters are intended to be extended.
+
+|Conversion|Output Type|Input Types|Description|
+|:-:|:-:|:-:|:-|
+|toInt| `number` | `number`, `string` |Converts only integers (needs updating)|
+|toNumber| `number` | `number`, `string` |Converts any number|
+|toBoolean| `boolean` | `boolean`, `string` |Converts 'true' and 'false' (needs updating)|
 
 ## Errors
 
@@ -237,9 +278,15 @@ Custom validation errors are implemented. It is ulikely that you will need to ex
 
 For example, supporting JSON formatted validation errors for easier parsing and logging.
 
+- **ValidationError:** Abstract base class for all validation errors.
+- **ConversionError:** Type of all the conversion errors.
+- **AssertionError:** Type of all the assertion errors.
+- **ValidationError::** Type of all the validation errors.
+- **NotMatchAnyError:** Type of error thrown when `Any` does not match any of the provided validation options.
+
 ## Custom Validators (Extensions)
 
-Validators can be customized using converters, assertions as well as other custom validators (extensions).
+Validators can be customized using converters, assertions as well as other custom validators (extensions). Upon failure, validators throw a `ValidationError`.
 
 ### Alias
 
