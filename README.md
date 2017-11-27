@@ -1,7 +1,7 @@
 # validate-typescript
 Extensible schema based validator that supports typescript typing.
 
-This package strives meet the following criteria:
+This package strives to meet the following criteria:
 
 - [lightweight](#example)
 - [inline](#example)
@@ -12,7 +12,9 @@ This package strives meet the following criteria:
 
 # Installation
 
-    npm install validate-typescript
+```
+npm install validate-typescript
+```
 
 # Imports
 
