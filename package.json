@@ -1,6 +1,6 @@
 {
   "name": "validate-typescript",
-  "version": "1.0.7",
+  "version": "1.0.8",
   "description": "Extensible schema based validator that supports typescript typing.",
   "main": "dist/index.js",
   "types": "index.d.ts",
