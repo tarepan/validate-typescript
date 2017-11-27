@@ -224,7 +224,7 @@ Assertions are intended to be extended.
 ### Typed Assertions
 
 |Assertion|Description|
-|:-:|:-:|
+|:-|:-|
 |isSameType|Assert type equality of two inputs.|
 |isSameTypeName|Asserts type name equality of two inputs.|
 |isSymbol|Asserts symbol type input.|
@@ -239,14 +239,14 @@ Assertions are intended to be extended.
 ### Numeric Assertions
 
 |Assertion|Description|
-|:-:|:-:|
+|:-|:-|
 |isInt|Asserts integer input.|
 |isFloat|Asserts float input.|
 
 ### Operational Assertions
 
 |Assertion|Description|
-|:-:|:-:|
+|:-|:-|
 |isEqualTo|Asserts equality (==) of two inputs.|
 |isGreaterThan|Asserts greater than relation (>) of two inputs.|
 |isLessThan|Asserts less than relation (<) of two inputs.|
@@ -256,7 +256,7 @@ Assertions are intended to be extended.
 ### Misc Assertions
 
 |Assertion|Description|
-|:-:|:-:|
+|:-|:-|
 |isEqual|Asserts typed equality (===) of two inputs.|
 |isRegEx|Asserts RegExp matching input.|
 
@@ -267,7 +267,7 @@ All converters attempt to convert the input to a specific type and throw a `Conv
 Converters are intended to be extended.
 
 |Conversion|Output Type|Input Types|Description|
-|:-:|:-:|:-:|:-|
+|:-|:-:|:-:|:-|
 |toInt| `number` | `number`, `string` |Converts only integers (needs updating)|
 |toNumber| `number` | `number`, `string` |Converts any number|
 |toBoolean| `boolean` | `boolean`, `string` |Converts 'true' and 'false' (needs updating)|
