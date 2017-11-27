@@ -20,7 +20,7 @@ TODO: getting started, simple example
 
 # Validators
 
-The following examples of `validate-typescript` schemas, illustrat the different validation methods.
+The following examples of `validate-typescript` schemas, illustrate the different validation methods.
 
 **Note:** the comment `// type: TypeName` following the validator explicitly specifies the resultant typescript type inferred by the typescipt transpiler. This relates back to the *strongly typed* criteria.
 
