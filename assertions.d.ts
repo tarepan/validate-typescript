@@ -1,6 +1,6 @@
 
 export function Assert(condition: boolean, invert: boolean, value: any, assertion: string, 
-                       details: string);
+                       details: string): void;
 
 export function isSameType(target: any, value: any, invert: boolean): void;
 
