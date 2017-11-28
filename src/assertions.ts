@@ -2,14 +2,14 @@ import { objToStr, objectType } from './common';
 import { AssertionError } from './errors';
 
 export function Assert(condition: boolean, invert: boolean, value: any, assertion: string, 
-                       details: string) {
+                       details: string): void {
     let name = ((invert) ? 'isNot' : 'is') + assertion.slice(2);
     let messagePrefix = (invert) ? 'is' : 'is not';
     let message = `${messagePrefix} ${details}`;
     if ((invert) ? condition : !condition) throw new AssertionError(value, name, message);
 }
 
-export function isSameType(target: any, value: any, invert: boolean = false) {
+export function isSameType(target: any, value: any, invert: boolean = false): void {
     let targetType = objectType(target);
     let valueType  = objectType(value);
     Assert(targetType === valueType, invert, valueType, isSameType.name, 
