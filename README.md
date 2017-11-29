@@ -1,3 +1,32 @@
+<!--![downloads](https://img.shields.io/github/downloads/dekryptonite/validate-typescript/total.svg)-->
+
+![github issues](https://img.shields.io/github/issues/dekryptonite/validate-typescript.svg)
+![npm downloads/week](https://img.shields.io/npm/dw/validate-typescript.svg)
+![npm downloads total](https://img.shields.io/npm/dt/validate-typescript.svg)
+
+![npm license](https://img.shields.io/npm/l/validate-typescript.svg)
+![npm version](https://img.shields.io/npm/v/validate-typescript.svg)
+![github version](https://img.shields.io/github/package-json/v/dekryptonite/validate-typescript.svg)
+
+![github code size](https://img.shields.io/github/languages/code-size/dekryptonite/validate-typescript.svg)
+![github contributors](https://img.shields.io/github/contributors/dekryptonite/validate-typescript.svg)
+![github commit activity](https://img.shields.io/github/commit-activity/y/dekryptonite/validate-typescript.svg)
+![github languages](https://img.shields.io/github/languages/top/dekryptonite/validate-typescript.svg)
+
+	
+
+
+
+
+
+
+
+
+
+
+
+
+
 # validate-typescript
 Extensible schema based validator that supports typescript typing.
 
