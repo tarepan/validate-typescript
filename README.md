@@ -10,23 +10,6 @@ This package strives to meet the following criteria:
 - [extensible](#custom-validators)
 - [convertable](#converters)
 
-# Installation
-
-```
-npm install validate-typescript
-```
-
-# Imports
-
-```ts
-import { ... } from 'validate-typescript';
-import { ... } from 'validate-typescript/validators';
-import { ... } from 'validate-typescript/extensions';
-import { ... } from 'validate-typescript/assertions';
-import { ... } from 'validate-typescript/conversions';
-import { ... } from 'validate-typescript/errors';
-```
-
 # Getting Started
 
 The example below represents a basic subset of the inline validations that can be applied.
@@ -85,6 +68,30 @@ try {
 }
 ```
 
+# Installation
+
+```
+npm install validate-typescript
+```
+
+# Imports
+
+The default import provides `validate`, all the `validators` and all the `extensions`:
+
+```ts
+import { ... } from 'validate-typescript';
+```
+
+For additional (more specific) imports, use the following:
+
+```ts
+import { ... } from 'validate-typescript/validators';  // imported above
+import { ... } from 'validate-typescript/extensions';  // imported above
+import { ... } from 'validate-typescript/assertions';  // not imported above
+import { ... } from 'validate-typescript/conversions'; // not imported above
+import { ... } from 'validate-typescript/errors';      // not imported above
+```
+
 # Validators
 
 The following examples of `validate-typescript` schemas illustrate the different validation methods.
@@ -100,6 +107,18 @@ let schema = {
     myNumber: Type(Number),      // type: Number
     myString: Type(String),      // type: String
     myCustom: Type(CustomClass), // type: CustomClass
+    // etc...
+}
+```
+
+## Primative Validators
+
+Expects an exact primative type match.
+
+```ts
+let schema = {
+    myNumber: Primative(Number),      // type: number
+    myString: Primative(String),      // type: string
     // etc...
 }
 ```
