@@ -1,4 +1,4 @@
-import { Email, ID, RegEx, Type, Options, Optional, Nullable, validate } from '../src/index';
+import { Email, ID, RegEx, Type, Primative, Options, Optional, Nullable, validate } from '../src/index';
 import { Any, All } from '../src/validators';
 
 console.log("Starting Test");
@@ -33,7 +33,8 @@ const schema = {
         name2: false,   
     }),
     tp: Type(Test),
-    rx: RegEx(/123/)
+    rx: RegEx(/123/),
+    str: Primative(String)
 }
 
 
@@ -46,7 +47,8 @@ try {
             name2: false
         },
         tp: new Test(), 
-        rx: '123'
+        rx: '123',
+        str: '4'
     });
     console.log(input);
 } catch (error) {

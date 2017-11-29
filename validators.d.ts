@@ -5,6 +5,7 @@ export enum ValidationOptions {
 
 export type ValidationMethod<T> = (input: any) => T;
 
+export function Primative<T>(ctor: (() => T)): T;
 export function Type<A, B>(ctor: ((() => A) | (new () => B))): B;
 export function Options<T>(schemas: T[], name?: string, option?: ValidationOptions): T;
 export function Any<T>(schemas: T[], name?: string): T;
