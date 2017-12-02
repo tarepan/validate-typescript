@@ -1,32 +1,30 @@
-
-export abstract class ValidationError extends Error {
-    abstract readonly reason: string;
+export declare abstract class ValidationError extends Error {
+    readonly abstract reason: string;
 }
-
-export class ConversionError extends ValidationError {
-    public value: any;
-    public converter: string;
-    public details: string;
+export declare class ConversionError extends ValidationError {
+    value: any;
+    converter: string;
+    details: string;
+    constructor(value: any, converter: string, details: string);
     readonly reason: string;
 }
-
-
-export class AssertionError extends ValidationError {
-    public value: any;
-    public assertion: string;
-    public details: string;
+export declare class AssertionError extends ValidationError {
+    value: any;
+    assertion: string;
+    details: string;
+    constructor(value: any, assertion: string, details: string);
     readonly reason: string;
 }
-
-export class ValidatorError extends ValidationError {
-    public validator: string;
-    public field: string;
-    public value: any;
-    public err: Error;
+export declare class ValidatorError extends ValidationError {
+    validator: string;
+    field: string;
+    value: any;
+    err: Error;
+    constructor(validator: string, field: string, value: any, err: Error);
     readonly reason: string;
 }
-
-export class NotMatchAnyError extends ValidationError {
-    public value: any;
+export declare class NotMatchAnyError extends ValidationError {
+    value: any;
+    constructor(value: any);
     readonly reason: string;
 }

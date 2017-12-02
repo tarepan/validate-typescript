@@ -1,0 +1,10 @@
+export declare function ValidateObject<T>(schema: T, input: any, name: string): T;
+export declare function ValidateFunction<T extends () => {}>(schema: T, input: any, name: string): T;
+export declare function LiteralString(schema: string, input: any, name: string): string;
+export declare function LiteralNumber(schema: number, input: any, name: string): number;
+export declare function LiteralBoolean(schema: boolean, input: any, name: string): boolean;
+export declare function LiteralSymbol(schema: symbol, input: any, name: string): symbol;
+export declare function Undefined(schema: undefined, input: any, name: string): undefined;
+export declare function Null(schema: undefined, input: any, name: string): null;
+export declare function Unknown<T>(schema: T, input: any, name: string): T;
+export declare function validate<T>(schema: T, input: any, name?: string): T;

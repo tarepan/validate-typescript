@@ -1,16 +1,14 @@
-export enum ValidationOptions {
+export declare enum ValidationOptions {
     any = 0,
-    all,
+    all = 1,
 }
-
-export type ValidationMethod<T> = (input: any) => T;
-
-export function Primative<T>(ctor: (() => T)): T;
-export function Type<A, B>(ctor: ((() => A) | (new () => B))): B;
-export function Options<T>(schemas: T[], name?: string, option?: ValidationOptions): T;
-export function Any<T>(schemas: T[], name?: string): T;
-export function All<T>(schemas: T[], name?: string): T;
-export function Optional<T>(schema: T, name?: string): T | undefined;
-export function Nullable<T>(schema: T, name?: string): T | null;
-export function Validator<T>(method: ValidationMethod<T>, name?: string): T;
-export function Alias<T>(validator: T, name?: string): T;
+export declare type ValidationMethod<T> = (input: any) => T;
+export declare function Primative<T>(ctor: (() => T)): T;
+export declare function Type<A, B>(ctor: ((() => A) | (new () => B))): B;
+export declare function Options<T>(schemas: T[], name?: string, option?: ValidationOptions): T;
+export declare function Any<T>(schemas: T[], name?: string): T;
+export declare function All<T>(schemas: T[], name?: string): T;
+export declare function Optional<T>(schema: T, name?: string): T | undefined;
+export declare function Nullable<T>(schema: T, name?: string): T | null;
+export declare function Validator<T>(method: ValidationMethod<T>, name?: string): T;
+export declare function Alias<T>(validator: T, name?: string): T;
