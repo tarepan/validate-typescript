@@ -3,7 +3,7 @@ export declare enum ValidationOptions {
     all = 1,
 }
 export declare type ValidationMethod<T> = (input: any) => T;
-export declare function Primative<T>(ctor: (() => T)): T;
+export declare function Primitive<T>(ctor: (() => T)): T;
 export declare function Type<A, B>(ctor: ((() => A) | (new () => B))): B;
 export declare function Options<T>(schemas: T[], name?: string, option?: ValidationOptions): T;
 export declare function Any<T>(schemas: T[], name?: string): T;

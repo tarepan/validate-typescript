@@ -6,3 +6,7 @@ export declare function propRef(prop: string, validator: string): string;
 export declare function Email(): string;
 export declare function ID(): number;
 export declare function RegEx(regEx: RegExp): string;
+export declare function Int(conversion?: boolean): number;
+export declare function Iso8601(conversion: boolean): string;
+export declare function DateTime(conversion?: boolean): Date;
+export declare function Date(): void;

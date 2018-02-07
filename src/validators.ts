@@ -9,7 +9,7 @@ export enum ValidationOptions {
 
 export type ValidationMethod<T> = (input: any) => T;
 
-export function Primative<T>(ctor: (() => T)): T {
+export function Primitive<T>(ctor: (() => T)): T {
     return Type(ctor);
 }
 

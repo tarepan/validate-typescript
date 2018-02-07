@@ -1,5 +1,6 @@
 import { objToStr, objectType } from './common';
 import { AssertionError } from './errors';
+import * as checks from './checks';
 
 export function Assert(condition: boolean, invert: boolean, value: any, assertion: string, 
                        details: string): void {
@@ -88,4 +89,12 @@ export function isUndefined(value: number, invert: boolean = false): void {
 
 export function isRegEx(regEx: RegExp, value: string, invert: boolean = false): void {
     Assert(regEx.test(value), invert, value, isRegEx.name, `a regular expression match`);
+}
+
+export function isDateString(value: string, invert: boolean = false): void {
+    Assert(isNaN(Date.parse(value)) , invert, value, isRegEx.name, `a regular expression match`);
+}
+
+export function isIso8601(value: string, invert: boolean = false): void {
+    Assert(checks.isIso8601(value), invert, value, isIso8601.name, `an ISO8601 date match`);
 }

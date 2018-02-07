@@ -18,3 +18,5 @@ export declare function isNull(value: any, invert?: boolean): void;
 export declare function isObject(value: any, invert?: boolean): void;
 export declare function isUndefined(value: number, invert?: boolean): void;
 export declare function isRegEx(regEx: RegExp, value: string, invert?: boolean): void;
+export declare function isDateString(value: string, invert?: boolean): void;
+export declare function isIso8601(value: string, invert?: boolean): void;
