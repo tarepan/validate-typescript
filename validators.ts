@@ -9,11 +9,11 @@ export enum ValidationOptions {
 
 export type ValidationMethod<T> = (input: any) => T;
 
-export function Primitive<T>(ctor: (() => T)): T {
-    return Type(ctor);
+export function Primitive<T>(ctor: (() => T), name: string = Primitive.name): T {
+    return Type(ctor, name);
 }
 
-export function Type<A, B>(ctor: ((() => A) | (new () => B))): B {
+export function Type<A, B>(ctor: ((() => A) | (new () => B)), name: string = Type.name): B {
         
     if (nullOrUndef(ctor) || nullOrUndef(ctor.prototype))
         throw new Error('Schema error, not a valid type.');
@@ -21,6 +21,7 @@ export function Type<A, B>(ctor: ((() => A) | (new () => B))): B {
     let result = <any>(() => {});
     result[sym.Validator] = sym.TypeValidator;
     result[sym.TypeValidator] = ctor.prototype.constructor.name;
+    result[sym.Metadata] = { name };
     return result as B;
 }
 
