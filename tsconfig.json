@@ -4,12 +4,16 @@
     "module": "commonjs",
     "declaration": true,
     "sourceMap": true,
-    "outDir": "dist",
+    "outDir": "./",
     "strict": true,
     "noImplicitAny": true,
     "strictNullChecks": true,
     "moduleResolution": "node",
     "experimentalDecorators": true,
     "emitDecoratorMetadata": true
-  }
+  },
+  "include": [
+    "**/*"
+  ],
+  "exclude": []
 }
