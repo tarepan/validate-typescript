@@ -7,7 +7,7 @@
   "scripts": {
     "build": "tsc",
     "clean": "rm -rf *.js *.js.map *.d.ts",
-    "prepublishOnly": "npm run build",
+    "prepublishOnly": "npm run clean && npm run build",
     "postpublish": "npm run clean",
     "test": "cd test && tsc && node ./dist/test"
   },
