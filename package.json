@@ -6,7 +6,7 @@
   "types": "./index.d.ts",
   "scripts": {
     "build": "tsc",
-    "clean": "find . -type f -name '*.js' -name '*.js.map' -name '*.d.ts' -delete",
+    "clean": "rm -rf *.js *.js.map *.d.ts",
     "prepublishOnly": "npm run clean && npm run build",
     "postpublish": "npm run clean",
     "test": "cd test && tsc && node ./dist/test",
