@@ -10,7 +10,7 @@
     "prepublishOnly": "npm run clean && npm run build",
     "postpublish": "npm run clean",
     "test": "cd test && tsc && node ./dist/test",
-    "versions": "npm publish && git add -A",
+    "version": "npm publish && git add -A",
     "postversion": "git push"
   },
   "repository": {
