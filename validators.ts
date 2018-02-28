@@ -1,5 +1,5 @@
 import * as sym from './symbols';
-import { nullOrUndef } from './common';
+import { isNullOrUndefined } from './common';
 import { validate } from './validate';
 
 export enum ValidationOptions {
@@ -15,7 +15,7 @@ export function Primitive<T>(ctor: (() => T), name: string = Primitive.name): T 
 
 export function Type<A, B>(ctor: ((() => A) | (new () => B)), name: string = Type.name): B {
         
-    if (nullOrUndef(ctor) || nullOrUndef(ctor.prototype))
+    if (isNullOrUndefined(ctor) || isNullOrUndefined(ctor.prototype))
         throw new Error('Schema error, not a valid type.');
 
     let result = <any>(() => {});

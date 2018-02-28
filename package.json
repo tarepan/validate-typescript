@@ -30,5 +30,9 @@
   "bugs": {
     "url": "https://github.com/Dekryptonite/validate-typescript/issues"
   },
-  "homepage": "https://github.com/Dekryptonite/validate-typescript#readme"
+  "homepage": "https://github.com/Dekryptonite/validate-typescript#readme",
+  "dependencies": {
+    "@types/chalk": "^2.2.0",
+    "chalk": "^2.3.1"
+  }
 }

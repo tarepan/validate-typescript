@@ -1,6 +1,8 @@
-import { objToStr, objectType } from './common';
+import { objectToString, objectType } from './common';
 import { AssertionError } from './errors';
 import * as checks from './checks';
+
+export const INVERT = true;
 
 export function Assert(condition: boolean, invert: boolean, value: any, assertion: string, 
                        details: string): void {
@@ -14,16 +16,16 @@ export function isSameType(target: any, value: any, invert: boolean = false): vo
     let targetType = objectType(target);
     let valueType  = objectType(value);
     Assert(targetType === valueType, invert, valueType, isSameType.name, 
-           `the same type as ${objToStr(targetType)}`);
+           `the same type as ${objectToString(targetType)}`);
 }
 
 export function isSameTypeName(target: string, value: string, invert: boolean = false): void {
     Assert(target === value, invert, value, isSameTypeName.name, 
-           `the same type as ${objToStr(target)}`);
+           `the same type as ${objectToString(target)}`);
 }
 
 export function isEqual(target: any, value: any, invert: boolean = false): void {
-    Assert(target === value, invert, value, isEqual.name, `equal to ${objToStr(target)}`);
+    Assert(target === value, invert, value, isEqual.name, `equal to ${objectToString(target)}`);
 }
 
 export function isSymbol(value: string, invert: boolean = false): void {
