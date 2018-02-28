@@ -1,88 +1,121 @@
 import * as assert  from './assertions';
 import * as sym from './symbols';
-import { objectType } from './common';
+import { objectType, isUndefined } from './common';
 import { ValidatorError, ValidationError, NotMatchAnyError } from './errors';
 import { ValidationOptions } from './validators';
+import { INVERT } from './assertions';
+import chalk from 'chalk';
 
-export function ValidateObject<T>(schema: T, input: any, name: string): T {
+/**
+ * Validates that the Null, Object or Array value matches the schema.
+ * @param schema	Null, Object or Array schema to match. 
+ * @param value		Value to be validated.
+ * @param property	Name of the property being validated.
+ */
+export function ValidateObject<T>(schema: T, value: any, property: string): T {
 
     // Null Validation
     if (schema === null) {
-        Null(schema, input, name);
-        return input;
+        Null(schema, value, property);
+        return value;
     }
 
     // Array Validation
     if (Array.isArray(schema)) {
+
+        // Ensure that the value is an array.
         try {
-            assert.isArray(input);
-        } catch (ex) {
-            throw new ValidatorError(Array.name, name, input, ex);
+            assert.isArray(value);
+        } catch (error) {
+            throw new ValidatorError(Array.name, property, value, error);
         }
-        let memIdx = 0;
-        for (const member of input) {
-            let idx = 0;
-            for (const prop of schema) {
+
+        // Validate each element of the array.
+        for (let element_idx = 0; element_idx < value.length; element_idx++) {
+
+			const sub_property = `${property}[${element_idx}]`;
+			const match_error = new NotMatchAnyError(value[element_idx]);
+
+			// The element can match Any schema in the array.
+            for (let schema_idx = 0; schema_idx < schema.length; schema_idx++) {				
+
                 try {
-                    input[memIdx] = ValidateRecursive(prop, member, `${name}[${idx}]`);
-                    break;
-                } catch (ex) {
-                    if ((idx + 1) === schema.length) {
-                        throw new ValidatorError(Array.name, `${name}[${idx}]`, input, 
-                        new NotMatchAnyError(input[idx]));
-                    }
+
+					value[element_idx] = ValidateRecursive(schema[schema_idx], value[element_idx], sub_property);
+					break;
+
+                } catch (error) {
+
+					match_error.child_errors.push(error);
+
+                    if ((schema_idx + 1) === schema.length) {
+						throw (match_error.child_errors.length > 1) ? match_error : error;
+					}
+
                 }
-                idx++;
+
             }
-            memIdx++;
+
         }
 
     // Object Validation
     } else {
+
+		// Ensure that the value is an object.
         try {
-            assert.isObject(input);
-            assert.isNull(input, true);
-            assert.isArray(input, true);
-        } catch (ex) {
-            throw new ValidatorError(Object.name, name, input, ex);
-        }
-        for (const prop of Object.getOwnPropertyNames(schema)) {
-            input[prop] = ValidateRecursive((<any>schema)[prop], input[prop], `${name}.${prop}`);
-        }
+            assert.isObject(value);
+            assert.isNull(value, INVERT);
+            assert.isArray(value, INVERT);
+        } catch (error) {
+            throw new ValidatorError(Object.name, property, value, error);
+		}
+		
+		// Validate the fields of the object.
+        for (const field of Object.getOwnPropertyNames(schema)) {
+            value[field] = ValidateRecursive((<any>schema)[field], value[field], `${property}.${field}`);
+		}
+		
     }
 
-    return input;
+    return value;
 };
 
-export function ValidateFunction<T extends () => {}>(schema: T, input: any, name: string): T {
+
+export function ValidateFunction<T extends () => {}>(schema: T, value: any, property: string): T {
 
     // Type Validation
     if ((<any>schema)[sym.Validator] === sym.TypeValidator) {
-        let typeName = (<any>schema)[sym.TypeValidator];
+        let type_name = (<any>schema)[sym.TypeValidator];
         try {
-            assert.isSameTypeName(typeName, <string>objectType(input));
-        } catch(ex) {
-            throw new ValidatorError(typeName, name, input, ex);
+            assert.isSameTypeName(type_name, <string>objectType(value));
+        } catch(error) {
+            throw new ValidatorError(type_name, property, value, error);
         }
     }
 
     // Options Validation
-    else if ((<any>schema)[sym.Validator] === sym.OptionsValidator) {
-        let schemas = (<any>schema)[sym.OptionsValidator].schemas;
-        let option: ValidationOptions = (<any>schema)[sym.OptionsValidator].option;
-        let optionName = (<any>schema)[sym.Metadata].name;
-        let idx = 0;
-        for (const subSchema of schemas) {
+    else if ((<any>schema)[sym.Validator] === sym.OptionsValidator) {		
+
+        const schemas = (<any>schema)[sym.OptionsValidator].schemas;
+        const option: ValidationOptions = (<any>schema)[sym.OptionsValidator].option;
+		const option_name = (<any>schema)[sym.Metadata].name;
+		
+		const match_error = new NotMatchAnyError(value);
+
+		// Check each schema if (ALL); Check first valid schema (ANY).
+        for (let schema_idx = 0; schema_idx < schemas.length; schema_idx++) {
+
             try {
-                idx++;
-                input = ValidateRecursive(subSchema, input, name);
+                value = ValidateRecursive(schemas[schema_idx], value, property);
                 if (option === ValidationOptions.any)
                     break;
             }
-            catch (ex) {
-                if ((option === ValidationOptions.all) || (idx === schemas.length)) {
-                    ex = (option === ValidationOptions.all) ? ex : new NotMatchAnyError(input);
-                    throw new ValidatorError(optionName, name, input, ex);
+            catch (error) {
+
+				match_error.child_errors.push(error);
+
+                if ((option === ValidationOptions.all) || ((schema_idx + 1) === schemas.length)) {
+                    throw new ValidatorError(option_name, property, value, (option === ValidationOptions.all) ? error : match_error);
                 }
             }            
         }
@@ -90,110 +123,162 @@ export function ValidateFunction<T extends () => {}>(schema: T, input: any, name
 
     // Validator Validation
     else if ((<any>schema)[sym.Validator] === sym.CustomValidator) {
-        let validatorName = (<any>schema)[sym.Metadata].name;
+
+        let validator_name = (<any>schema)[sym.Metadata].name;
         try {
-            input = (<any>schema)[sym.CustomValidator](input, name);
-        } catch(ex) {
-            throw new ValidatorError(validatorName, name, input, ex);
-        }
+            value = (<any>schema)[sym.CustomValidator](value, property);
+        } catch(error) {
+            throw new ValidatorError(validator_name, property, value, error);
+		}
+		
     }
 
-    return input;
+    return value;
 };
     
+/**
+ * Validates that the value is string literal.
+ * @param schema    String literal to match.
+ * @param value     Value to be validated.
+ * @param property  Name of the property being validated.
+ */    
+export function LiteralString(schema: string, value: any, property: string): string {
+    try {
+        assert.isString(value);
+        assert.isEqual(schema, value);
+    } catch (error) {
+        throw new ValidatorError(LiteralString.name, property, value, error);
+    }
+    return value;
+};
+
+/**
+ * Validates that the value is number literal.
+ * @param schema    Number literal to match.
+ * @param value     Value to be validated.
+ * @param property  Name of the property being validated.
+ */
+export function LiteralNumber(schema: number, value: any, property: string): number {
+    try {
+        assert.isNumber(value);
+        assert.isEqual(schema, value);
+    } catch (error) {
+        throw new ValidatorError(LiteralNumber.name, property, value, error);
+    }
+    return value;
+};
+
+/**
+ * Validates that the value is boolean literal.
+ * @param schema    Boolean literal to match.
+ * @param value     Value to be validated.
+ * @param property  Name of the property being validated.
+ */
+export function LiteralBoolean(schema: boolean, value: any, property: string): boolean {
+    try {
+        assert.isBoolean(value);
+        assert.isEqual(schema, value);
+    } catch (error) {
+        throw new ValidatorError(LiteralBoolean.name, property, value, error);
+    }
+    return value;
+};
+
+/**
+ * Validates that the value is Symbol.
+ * @param schema    Symbol schema to match.
+ * @param value     Value to be validated.
+ * @param property  Name of the property being validated.
+ */
+export function LiteralSymbol(schema: symbol, value: any, property: string): symbol {
+    try {
+        assert.isSymbol(value);
+        assert.isEqual(schema, value);
+    } catch (error) {
+        throw new ValidatorError(LiteralSymbol.name, property, value, error);
+    }
+    return value;
+};
+
+/**
+ * Validates that the value is undefined.
+ * @param schema    Redundant.
+ * @param value     Value to be validated.
+ * @param property  Name of the property being validated.
+ */
+export function Undefined(schema: undefined, value: any, property: string): undefined {
+    try {
+        assert.isUndefined(value);
+    } catch (error) {
+        throw new ValidatorError(Undefined.name, property, value, error);
+    }
+    return value;
+};
+
+/**
+ * Validates that the value is null.
+ * @param schema    Redundant.
+ * @param value     Value to be validated.
+ * @param property  Name of the property being validated.
+ */
+export function Null(schema: null, value: any, property: string): null {
+    try {
+        assert.isNull(value);
+    } catch (error) {
+        throw new ValidatorError(Null.name, property, value, error);
+    }
+    return value;
+};
+
+/**
+ * Throws an unknown type validation error.
+ * @param schema    Redundant.
+ * @param value     Value to be validated.
+ * @param property  Name of the property being validated.
+ */
+export function Unknown<T>(schema: T, value: any, property: string): T {
+    throw new ValidatorError(Undefined.name, property, value, new Error('Unable to validate unknown type.'));
+};
+
+function ValidateRecursive<T>(schema: T, value: any, property: string): T {
     
-export function LiteralString(schema: string, input: any, name: string): string {
-    try {
-        assert.isString(input);
-        assert.isEqual(schema, input);
-    } catch (ex) {
-        throw new ValidatorError(LiteralString.name, name, input, ex);
-    }
-    return input;
-};
+    if 		(typeof schema === 'object')	{ value = ValidateObject(schema, value, property); }
+    else if	(typeof schema === 'function')	{ value = ValidateFunction(schema, value, property); }        
+    else if (typeof schema === 'string')	{ value = LiteralString(schema, value, property); }
+    else if (typeof schema === 'number')	{ value = LiteralNumber(schema, value, property); }
+    else if (typeof schema === 'boolean')	{ value = LiteralBoolean(schema, value, property); }
+    else if (typeof schema === 'symbol')	{ value = LiteralSymbol(schema, value, property); }
+    else if (typeof schema === 'undefined')	{ value = Undefined(schema, value, property); }
+    else									{ value = Unknown(schema, value, property); }
 
-export function LiteralNumber(schema: number, input: any, name: string): number {
-    try {
-        assert.isNumber(input);
-        assert.isEqual(schema, input);
-    } catch (ex) {
-        throw new ValidatorError(LiteralNumber.name, name, input, ex);
-    }
-    return input;
-};
-
-export function LiteralBoolean(schema: boolean, input: any, name: string): boolean {
-    try {
-        assert.isBoolean(input);
-        assert.isEqual(schema, input);
-    } catch (ex) {
-        throw new ValidatorError(LiteralBoolean.name, name, input, ex);
-    }
-    return input;
-};
-
-export function LiteralSymbol(schema: symbol, input: any, name: string): symbol {
-    try {
-        assert.isSymbol(input);
-        assert.isEqual(schema, input);
-    } catch (ex) {
-        throw new ValidatorError(LiteralSymbol.name, name, input, ex);
-    }
-    return input;
-};
-
-export function Undefined(schema: undefined, input: any, name: string): undefined {
-    try {
-        assert.isUndefined(input);
-    } catch (ex) {
-        throw new ValidatorError(Undefined.name, name, input, ex);
-    }
-    return input;
-};
-
-export function Null(schema: undefined, input: any, name: string): null {
-    try {
-        assert.isNull(input);
-    } catch (ex) {
-        throw new ValidatorError(Null.name, name, input, ex);
-    }
-    return input;
-};
-
-export function Unknown<T>(schema: T, input: any, name: string): T {
-    throw new ValidatorError(Undefined.name, name, input, new Error('unknown validation error.'));
-};
-
-function ValidateRecursive<T>(schema: T, input: any, name: string): T {
-
-    if (typeof schema === 'object') {
-        input = ValidateObject(schema, input, name);
-    } else if (typeof schema === 'function') {
-        input = ValidateFunction(schema, input, name);
-    } else if (typeof schema === 'string') {
-        input = LiteralString(schema, input, name);
-    } else if (typeof schema === 'number') {
-        input = LiteralNumber(schema, input, name);
-    } else if (typeof schema === 'boolean') {
-        input = LiteralBoolean(schema, input, name);
-    } else if (typeof schema === 'symbol') {
-        input = LiteralSymbol(schema, input, name);
-    } else if (typeof schema === 'undefined') {
-        input = Undefined(schema, input, name);
-    } else {
-        input = Unknown(schema, input, name);
-    }
-
-    return input;
+    return value;
 }
 
-export function validate<T>(schema: T, input: any, name: string = 'input'): T {
+export function banner(log: any) {
+	log(`\n${chalk.bgRedBright(' '.repeat(31))}\n${chalk.bgRedBright('  ')}${chalk.bold(' Validate TypeScript Error ')}${chalk.bgRedBright('  ')}\n${chalk.bgRedBright(' '.repeat(31))}\n`);
+}
+
+export function validate<T>(schema: T, value: any, log: any = console.log, name: string = ''): T {    
 
     try {
-        ValidateRecursive(schema, input, name);
-    } catch(ex) {
-        throw new Error(`\n${ex.message}`);        
+        ValidateRecursive(schema, value, name);    
+    } catch(error) {
+
+        if (error instanceof ValidationError) {			
+
+            if (!isUndefined(log)) {
+				// banner(log);
+				log('');
+				log(error.trace);
+				log('');
+            }
+
+            throw new Error(error.message);
+
+        } else {
+            throw error;
+        }        
     }   
 
-    return input;
+    return value;
 }
