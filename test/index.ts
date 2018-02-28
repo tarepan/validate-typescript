@@ -47,6 +47,11 @@ export class ValidatorError extends ValidationError {
 }
 
 
+let b = validate({
+    id: Primitive(String)
+}, {
+    id: null
+});
 
 
 let a = validate({
@@ -76,7 +81,7 @@ let a = validate({
                     '1',
                     '4',
                     {
-                        ide: 1,
+                        id: 1,
                         name: 'Jeremy'
                     },
                 ]

@@ -17,7 +17,7 @@ export function isUndefined(value: any) : value is undefined {
 }
 
 export function isNull(value: any) : value is null {
-    return (typeof value === null);
+    return (value === null);
 }
 
 export function isNullOrUndefined(value: any) : value is null | undefined {
