@@ -46,29 +46,51 @@ export class ValidatorError extends ValidationError {
     }
 }
 
+// let c = validate({
+//     bugs: {
+//         vest: Primitive(Number),
+//         test: [{
+//             id: Primitive(String),
+//             name: Primitive(String)
+//             }]
+//     }
+// }, {
+//     bugs: {
+//         vest: 'bag',
+//         test: [{
+//             id: 1,
+//             name: 'name',
+//         },
+//         {
+//             id: 1,
+//             name: null,
+//         }]
+//     }
+// });
+
 
 let b = validate({
     bugs: {
         vest: Primitive(Number),
-        test: [Any([{
-            id: Primitive(String),
+        test: [{
+            id: Primitive(Number),
             name: Primitive(String)
             },
             {
                 id: Primitive(Number),
-                name: Primitive(String)
-            }])]
+                name: Primitive(Number)
+            }]
     }
 }, {
     bugs: {
         vest: 'bag',
         test: [{
-            id: 'name',
-            name: 'name',
+            id: 1,
+            name: '',
         },
         {
             id: 1,
-            name: null,
+            name: 1,
         }]
     }
 });

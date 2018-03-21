@@ -106,20 +106,12 @@ export class NotMatchAnyError extends ValidationError {
     public reason(count: number = 0) {
 
         let response  = '';
-        
-        if (this.child_errors.length == 1) {
-            const child_error = this.child_errors[0];
-            if (child_error instanceof ValidationError) {
-                response += child_error.reason(count);
-            }
-            return response;
-        }
 
         response += '\n';
-        let option = 1;
         for (let child_error of this.child_errors) {
             if (child_error instanceof ValidationError) {
-                response += this.indent(count, `${chalk.magentaBright(`[Option: ${option++}]`)}`) + '\n';
+                const option = this.child_errors.indexOf(child_error) + 1;
+                response += this.indent(count, `${chalk.magentaBright(`[Option: ${option}]`)}\n`);
                 response += child_error.reason(count + 1);
             }
         }

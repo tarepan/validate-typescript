@@ -2,7 +2,7 @@ import * as assert  from './assertions';
 import * as sym from './symbols';
 import { objectType, isUndefined } from './common';
 import { ValidatorError, ValidationError, NotMatchAnyError, ObjectValidationError } from './errors';
-import { ValidationOptions } from './validators';
+import { ValidationOptions, Any } from './validators';
 import { INVERT } from './assertions';
 import chalk from 'chalk';
 
@@ -32,28 +32,15 @@ export function ValidateObject<T>(schema: T, value: any, property: string): T {
 
         // Validate each element of the array.
         for (let element_idx = 0; element_idx < value.length; element_idx++) {
+            
+            const sub_property = `${property}[${element_idx}]`;
 
-			const sub_property = `${property}[${element_idx}]`;
-			const match_error = new NotMatchAnyError(value[element_idx]);
-
-			// The element can match Any schema in the array.
-            for (let schema_idx = 0; schema_idx < schema.length; schema_idx++) {				
-
-                try {
-
-					value[element_idx] = ValidateRecursive(schema[schema_idx], value[element_idx], sub_property);
-					break;
-
-                } catch (error) {
-
-					match_error.child_errors.push(error);
-
-                    if ((schema_idx + 1) === schema.length) {
-						throw (match_error.child_errors.length > 1) ? match_error : error;
-					}
-
-                }
-
+            // If multiple schemas use any validator
+            if (schema.length > 1) {
+                let new_schema = Any(schema);
+                value[element_idx] = ValidateRecursive(new_schema, value[element_idx], sub_property);
+            } else {
+                value[element_idx] = ValidateRecursive(schema[0], value[element_idx], sub_property);
             }
 
         }
@@ -110,24 +97,25 @@ export function ValidateFunction<T extends () => {}>(schema: T, value: any, prop
         const option: ValidationOptions = (<any>schema)[sym.OptionsValidator].option;
 		const option_name = (<any>schema)[sym.Metadata].name;
 		
-		const match_error = new NotMatchAnyError(value);
-
+        const match_error = new NotMatchAnyError(value);
+        
 		// Check each schema if (ALL); Check first valid schema (ANY).
         for (let schema_idx = 0; schema_idx < schemas.length; schema_idx++) {
 
             try {
                 value = ValidateRecursive(schemas[schema_idx], value, property);
-                if (option === ValidationOptions.any)
+                if (option === ValidationOptions.any) {
+                    match_error.child_errors = [];
                     break;
+                }
             }
             catch (error) {
-
-				match_error.child_errors.push(error);
-
-                if ((option === ValidationOptions.all) || ((schema_idx + 1) === schemas.length)) {
-                    throw new ValidatorError(option_name, property, value, (option === ValidationOptions.all) ? error : match_error);
-                }
+                match_error.child_errors[schema_idx] = error;// .push(error);
             }            
+        }
+
+        if (match_error.child_errors.length > 0) {
+            throw new ValidatorError(option_name, property, value, match_error);
         }
     }
 
