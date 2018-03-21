@@ -1,7 +1,7 @@
 import * as assert  from './assertions';
 import * as sym from './symbols';
 import { objectType, isUndefined } from './common';
-import { ValidatorError, ValidationError, NotMatchAnyError, ObjectValidationError } from './errors';
+import { ValidatorError, ValidationError, NotMatchAnyError, MultipleValidationError } from './errors';
 import { ValidationOptions, Any } from './validators';
 import { INVERT } from './assertions';
 import chalk from 'chalk';
@@ -30,19 +30,29 @@ export function ValidateObject<T>(schema: T, value: any, property: string): T {
             throw new ValidatorError(Array.name, property, value, error);
         }
 
+        const array_error = new MultipleValidationError(value);
+		
         // Validate each element of the array.
         for (let element_idx = 0; element_idx < value.length; element_idx++) {
             
             const sub_property = `${property}[${element_idx}]`;
 
-            // If multiple schemas use any validator
-            if (schema.length > 1) {
-                let new_schema = Any(schema);
-                value[element_idx] = ValidateRecursive(new_schema, value[element_idx], sub_property);
-            } else {
-                value[element_idx] = ValidateRecursive(schema[0], value[element_idx], sub_property);
+            try {
+                // If multiple schemas use any validator
+                if (schema.length > 1) {
+                    let new_schema = Any(schema);
+                    value[element_idx] = ValidateRecursive(new_schema, value[element_idx], sub_property);
+                } else {
+                    value[element_idx] = ValidateRecursive(schema[0], value[element_idx], sub_property);
+                }
             }
+            catch (error) {
+                array_error.child_errors.push(error);
+            }
+        }
 
+        if (array_error.child_errors.length > 0) {
+            throw array_error;
         }
 
     // Object Validation
@@ -57,7 +67,7 @@ export function ValidateObject<T>(schema: T, value: any, property: string): T {
             throw new ValidatorError(Object.name, property, value, error);
         }
         
-        const object_error = new ObjectValidationError(value);
+        const object_error = new MultipleValidationError(value);
 		
 		// Validate the fields of the object.
         for (const field of Object.getOwnPropertyNames(schema)) {
@@ -110,7 +120,7 @@ export function ValidateFunction<T extends () => {}>(schema: T, value: any, prop
                 }
             }
             catch (error) {
-                match_error.child_errors[schema_idx] = error;// .push(error);
+                match_error.child_errors[schema_idx] = error;
             }            
         }
 

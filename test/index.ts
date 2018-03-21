@@ -86,11 +86,15 @@ let b = validate({
         vest: 'bag',
         test: [{
             id: 1,
+            name: null,
+        },
+        {
+            id: 1,
             name: '',
         },
         {
             id: 1,
-            name: 1,
+            name: null,
         }]
     }
 });

@@ -70,7 +70,7 @@ export class ValidatorError extends ValidationError {
     }
 }
 
-export class ObjectValidationError extends ValidationError {
+export class MultipleValidationError extends ValidationError {
 
     constructor(
         public value:       any,
@@ -83,10 +83,22 @@ export class ObjectValidationError extends ValidationError {
 
         let response = '';
 
+        const max = 3;
+        let more = 0; 
+
+        if (this.child_errors.length > max) {
+            more = this.child_errors.length - max;
+            this.child_errors = this.child_errors.slice(1, max);
+        }
+
         for (let child_error of this.child_errors) {
             if (child_error instanceof ValidationError) {
                 response += child_error.reason(count);
             }
+        }
+
+        if (more > 0) {
+            response += this.indent(count, `${chalk.redBright(`[+${more} error${more > 1 ? 's' : ''}]`)}\n`);
         }
 
         return response;
