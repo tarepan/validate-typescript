@@ -1,7 +1,7 @@
 import * as assert  from './assertions';
 import * as sym from './symbols';
 import { objectType, isUndefined } from './common';
-import { ValidatorError, ValidationError, NotMatchAnyError } from './errors';
+import { ValidatorError, ValidationError, NotMatchAnyError, ObjectValidationError } from './errors';
 import { ValidationOptions } from './validators';
 import { INVERT } from './assertions';
 import chalk from 'chalk';
@@ -68,12 +68,22 @@ export function ValidateObject<T>(schema: T, value: any, property: string): T {
             assert.isArray(value, INVERT);
         } catch (error) {
             throw new ValidatorError(Object.name, property, value, error);
-		}
+        }
+        
+        const object_error = new ObjectValidationError(value);
 		
 		// Validate the fields of the object.
         for (const field of Object.getOwnPropertyNames(schema)) {
-            value[field] = ValidateRecursive((<any>schema)[field], value[field], `${property}.${field}`);
-		}
+            try {
+                value[field] = ValidateRecursive((<any>schema)[field], value[field], `${property}.${field}`);
+            } catch (error) {
+                object_error.child_errors.push(error);
+            }
+        }
+        
+        if (object_error.child_errors.length > 0) {
+            throw object_error;
+        }
 		
     }
 
