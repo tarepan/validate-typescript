@@ -1,7 +1,25 @@
+# IDEs
+
 .vscode/
 .DS_Store/
 
-*.ts
-!*.d.ts
+# NODE
 
-*js.map
+node_modules/
+
+# SOURCE
+
+src/
+
+# SOURCE MAP
+
+*.js.map
+
+# TESTS
+
+test/
+
+# TYPESCRIPT CONFIG
+
+tsconfig.base.json
+tsconfig.json

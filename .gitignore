@@ -1,5 +1,18 @@
-node_modules
+# IDEs
+
+.vscode/
+.DS_Store/
+
+# NODE
+
+node_modules/
+
+# GENERATED
+
+lib/
+test/out/
 
 *.js
 *.js.map
+
 *.d.ts
