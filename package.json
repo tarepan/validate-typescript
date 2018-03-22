@@ -2,20 +2,21 @@
   "name": "validate-typescript",
   "version": "1.9.1",
   "description": "Extensible schema based validator that supports typescript typing.",
-  "main": "./index.js",
-  "types": "./index.d.ts",
+  "main": "lib/index.js",
+  "types": "lib/index.d.ts",
   "scripts": {
     "build": "tsc",
-    "clean": "rm -rf *.js *.js.map *.d.ts",
-    "prepublishOnly": "npm run clean && npm run build",
+    "clean": "rm -rf lib",
+    "prepublishOnly": "npm run clean && npm run build && npm run test",
     "postpublish": "npm run clean",
-    "test": "cd test && tsc && node ./dist/test",
+    "setup": "cd test && npm run setup",
+    "test": "cd test && npm run test",
     "version": "npm publish && git add -A",
     "postversion": "git push"
   },
   "repository": {
     "type": "git",
-    "url": "git+https://github.com/Dekryptonite/validate-typescript.git"
+    "url": "git+https://github.com/Grant-Zietsman/validate-typescript.git"
   },
   "keywords": [
     "validate",
@@ -25,14 +26,13 @@
     "schema",
     "javascript"
   ],
-  "author": "Dekryptonite",
+  "author": "Grant Zietsman",
   "license": "MIT",
   "bugs": {
     "url": "https://github.com/Dekryptonite/validate-typescript/issues"
   },
   "homepage": "https://github.com/Dekryptonite/validate-typescript#readme",
   "dependencies": {
-    "@types/chalk": "^2.2.0",
     "chalk": "^2.3.1"
   }
 }

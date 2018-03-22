@@ -78,7 +78,7 @@ export function isArray(value: any[], invert: boolean = false): void {
 }
 
 export function isNull(value: any, invert: boolean = false): void {
-    Assert(value == null, invert, value, isNull.name, 'null');
+    Assert(value === null, invert, value, isNull.name, 'null');
 }
 
 export function isObject(value: any, invert: boolean = false): void {
