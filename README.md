@@ -384,6 +384,10 @@ export function RegEx(regEx: RegExp) {
 }
 ```
 
+## Compatibility
+
+This project targets ES6.
+
 ## Recommendations
 
 TODO: complete
