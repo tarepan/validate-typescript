@@ -4,13 +4,24 @@ import { objectType, isUndefined } from './common';
 import { ValidatorError, ValidationError, NotMatchAnyError, MultipleValidationError } from './errors';
 import { ValidationOptions, Any } from './validators';
 import { INVERT } from './assertions';
-import chalk from 'chalk';
 
 /**
- * Validates that the Null, Object or Array value matches the schema.
- * @param schema	Null, Object or Array schema to match. 
- * @param value		Value to be validated.
- * @param property	Name of the property being validated.
+ * Validator where the schema is an object. This is used, specifically for validating 
+ * null, array and object types.
+ * 
+ * For null validation, the value must match the schema value of null.
+ * 
+ * For array validation each element of the array needs to be successfully validated. Multiple 
+ * schemas can be provided but only one of them neds to succeed. Synonymous to the "any" 
+ * validator.
+ * 
+ * For object validation, all the properties provided in the schema need to be provided in the
+ * value object. To be validated, all the properties need to be validated successfully.
+ * @param {T} schema The validation schema (object).
+ * @param {any} value Variable (value) to be validated.
+ * @param {string} property Name of the variable (value) being validated, for detailed logging.
+ * @returns {T} When validation succeeds.
+ * @throws {ValidatorError} When validation fails.
  */
 export function ValidateObject<T>(schema: T, value: any, property: string): T {
 
@@ -31,6 +42,8 @@ export function ValidateObject<T>(schema: T, value: any, property: string): T {
         }
 
         const array_error = new MultipleValidationError(value);
+
+        const idx_schema = (schema.length > 1) ? Any(schema) : schema[0];
 		
         // Validate each element of the array.
         for (let element_idx = 0; element_idx < value.length; element_idx++) {
@@ -38,13 +51,7 @@ export function ValidateObject<T>(schema: T, value: any, property: string): T {
             const sub_property = `${property}[${element_idx}]`;
 
             try {
-                // If multiple schemas use any validator
-                if (schema.length > 1) {
-                    let new_schema = Any(schema);
-                    value[element_idx] = ValidateRecursive(new_schema, value[element_idx], sub_property);
-                } else {
-                    value[element_idx] = ValidateRecursive(schema[0], value[element_idx], sub_property);
-                }
+                value[element_idx] = ValidateRecursive(idx_schema, value[element_idx], sub_property);
             }
             catch (error) {
                 array_error.child_errors.push(error);
@@ -87,8 +94,26 @@ export function ValidateObject<T>(schema: T, value: any, property: string): T {
     return value;
 };
 
-
-export function ValidateFunction<T extends () => {}>(schema: T, value: any, property: string): T {
+/**
+ * Validator where the schema is a function. This is used, specifically for validating based on 
+ * type, multiple schema options and custom validators. The function serves as a wrapper to 
+ * simplify the API.
+ * 
+ * For type validation, the class name of the value must match the class name of the schema.
+ * 
+ * For options validation, an array of schemas are provided. If the option is any, then only one
+ * of the schemas need to match to validate successfully. If the option is all, then all of the 
+ * schemas need to match to validate successfully. 
+ * 
+ * For custom validator validation, the custom validator function is called with the value and 
+ * property as parameters.
+ * @param {T} schema The validation schema (function).
+ * @param {any} value Variable (value) to be validated.
+ * @param {string} property Name of the variable (value) being validated, for detailed logging.
+ * @returns {T} When validation succeeds.
+ * @throws {ValidatorError} When validation fails.
+ */
+export function ValidateFunction<T extends Function>(schema: T, value: any, property: string): T {
 
     // Type Validation
     if ((<any>schema)[sym.Validator] === sym.TypeValidator) {
@@ -129,7 +154,7 @@ export function ValidateFunction<T extends () => {}>(schema: T, value: any, prop
         }
     }
 
-    // Validator Validation
+    // Custom Validator Validation
     else if ((<any>schema)[sym.Validator] === sym.CustomValidator) {
 
         let validator_name = (<any>schema)[sym.Metadata].name;
@@ -141,15 +166,22 @@ export function ValidateFunction<T extends () => {}>(schema: T, value: any, prop
 		
     }
 
+    // Validator Function (not supported)
+    else Unknown(schema, value, property)
+
     return value;
 };
-    
+
 /**
- * Validates that the value is string literal.
- * @param schema    String literal to match.
- * @param value     Value to be validated.
- * @param property  Name of the property being validated.
- */    
+ * Validator where the schema is a literal string, thus the variable (value) is expected to be a 
+ * string and have the same string value as the schema.
+ * @param {string} schema The validation schema.
+ * @param {any} value Variable (value) to be validated.
+ * @param {string} property Name of the variable (value) being validated, for detailed logging.
+ * @returns {string} When validation succeeds.
+ * @throws {ValidatorError} When the value is either not a string or the string value differs
+ * from that of the schema (failed validation).
+ */
 export function LiteralString(schema: string, value: any, property: string): string {
     try {
         assert.isString(value);
@@ -161,10 +193,14 @@ export function LiteralString(schema: string, value: any, property: string): str
 };
 
 /**
- * Validates that the value is number literal.
- * @param schema    Number literal to match.
- * @param value     Value to be validated.
- * @param property  Name of the property being validated.
+ * Validator where the schema is a literal number, thus the variable (value) is expected to be a 
+ * number and have the same numeric value as the schema.
+ * @param {number} schema The validation schema.
+ * @param {any} value Variable (value) to be validated.
+ * @param {string} property Name of the variable (value) being validated, for detailed logging.
+ * @returns {number} When validation succeeds.
+ * @throws {ValidatorError} When the value is either not a number or the numeric value differs
+ * from that of the schema (failed validation).
  */
 export function LiteralNumber(schema: number, value: any, property: string): number {
     try {
@@ -177,10 +213,14 @@ export function LiteralNumber(schema: number, value: any, property: string): num
 };
 
 /**
- * Validates that the value is boolean literal.
- * @param schema    Boolean literal to match.
- * @param value     Value to be validated.
- * @param property  Name of the property being validated.
+ * Validator where the schema is a literal boolean, thus the variable (value) is expected to be a 
+ * boolean and have the same boolean value as the schema.
+ * @param {boolean} schema The validation schema.
+ * @param {any} value Variable (value) to be validated.
+ * @param {string} property Name of the variable (value) being validated, for detailed logging.
+ * @returns {boolean} When validation succeeds.
+ * @throws {ValidatorError} When the value is either not a boolean or the boolean value differs 
+ * from that of the schema (failed validation).
  */
 export function LiteralBoolean(schema: boolean, value: any, property: string): boolean {
     try {
@@ -193,10 +233,14 @@ export function LiteralBoolean(schema: boolean, value: any, property: string): b
 };
 
 /**
- * Validates that the value is Symbol.
- * @param schema    Symbol schema to match.
- * @param value     Value to be validated.
- * @param property  Name of the property being validated.
+ * Validator where the schema is a literal symbol, thus the variable (value) is expected to be a 
+ * symbol and have the same symbolic value as the schema.
+ * @param {symbol} schema The validation schema.
+ * @param {any} value Variable (value) to be validated.
+ * @param {string} property Name of the variable (value) being validated, for detailed logging.
+ * @returns {symbol} When validation succeeds.
+ * @throws {ValidatorError} When the value is either not a symbol or the symbolic value differs 
+ * from that of the schema (failed validation).
  */
 export function LiteralSymbol(schema: symbol, value: any, property: string): symbol {
     try {
@@ -209,10 +253,13 @@ export function LiteralSymbol(schema: symbol, value: any, property: string): sym
 };
 
 /**
- * Validates that the value is undefined.
- * @param schema    Redundant.
- * @param value     Value to be validated.
- * @param property  Name of the property being validated.
+ * Validator where the schema is undefined, thus the variable (value) is expected to be undefined
+ * too.
+ * @param {undefined} schema The validation schema.
+ * @param {any} value Variable (value) to be validated.
+ * @param {string} property Name of the variable (value) being validated, for detailed logging.
+ * @returns {undefined} When validation succeeds.
+ * @throws {ValidatorError} When the value is not undefined (failed validation).
  */
 export function Undefined(schema: undefined, value: any, property: string): undefined {
     try {
@@ -224,10 +271,12 @@ export function Undefined(schema: undefined, value: any, property: string): unde
 };
 
 /**
- * Validates that the value is null.
- * @param schema    Redundant.
- * @param value     Value to be validated.
- * @param property  Name of the property being validated.
+ * Validator where the schema is null, thus the variable (value) is expected to be null too.
+ * @param {null} schema The validation schema.
+ * @param {any} value Variable (value) to be validated.
+ * @param {string} property Name of the variable (value) being validated, for detailed logging.
+ * @returns {null} When validation succeeds.
+ * @throws {ValidatorError} When the value is not null (failed validation).
  */
 export function Null(schema: null, value: any, property: string): null {
     try {
@@ -239,15 +288,25 @@ export function Null(schema: null, value: any, property: string): null {
 };
 
 /**
- * Throws an unknown type validation error.
- * @param schema    Redundant.
- * @param value     Value to be validated.
- * @param property  Name of the property being validated.
+ * Validator where the schema has a native type that has not been catered for.
+ * @param {T} schema The validation schema.
+ * @param {any} value Variable (value) to be validated.
+ * @param {string} property Name of the variable (value) being validated, for detailed logging.
+ * @throws {ValidatorError} This caters for the scenario where a native type is not catered for.
  */
 export function Unknown<T>(schema: T, value: any, property: string): T {
-    throw new ValidatorError(Undefined.name, property, value, new Error('Unable to validate unknown type.'));
+    throw new ValidatorError(Unknown.name, property, value, new Error('Unable to validate unknown type.'));
 };
 
+/**
+ * Internal method to select the appropriate validation scheme, base on the native type of the 
+ * variable (value).
+ * @param {T} schema The validation schema.
+ * @param {any} value Variable (value) to be validated.
+ * @param {string} property Name of the variable (value) being validated, for detailed logging.
+ * @returns {T} The original value cast to type T if validation succeeded, else an error is 
+ * thrown.
+ */
 function ValidateRecursive<T>(schema: T, value: any, property: string): T {
     
     if 		(typeof schema === 'object')	{ value = ValidateObject(schema, value, property); }
@@ -262,30 +321,28 @@ function ValidateRecursive<T>(schema: T, value: any, property: string): T {
     return value;
 }
 
-export function banner(log: any) {
-	log(`\n${chalk.bgRedBright(' '.repeat(31))}\n${chalk.bgRedBright('  ')}${chalk.bold(' Validate TypeScript Error ')}${chalk.bgRedBright('  ')}\n${chalk.bgRedBright(' '.repeat(31))}\n`);
-}
-
-export function validate<T>(schema: T, value: any, log: any = console.log, name: string = ''): T {    
+/**
+ * Validates a variable (value) according to a validation schema (type T).
+ * @param {T} schema The validation schema.
+ * @param {any} value Variable (value) to be validated.
+ * @param {string} name Name of the variable (value) being validated, for detailed logging.
+ * @param {Function(string)} log Validation error logger, takes a string input.
+ * @returns {T} The original value cast to type T if validation succeeded, else an error is 
+ * thrown.
+ */
+export function validate<T>(schema: T, value: any, name: string = '', log: any = console.log): T {    
 
     try {
         ValidateRecursive(schema, value, name);    
     } catch(error) {
 
-        if (error instanceof ValidationError) {			
-
+        if (error instanceof ValidationError) {
             if (!isUndefined(log)) {
-				// banner(log);
-				log('');
-				log(error.trace);
-				log('');
-            }
+				log('\n' + error.trace + '\n');
+            }            
+        }
 
-            throw new Error(error.message);
-
-        } else {
-            throw error;
-        }        
+        throw error;
     }   
 
     return value;
