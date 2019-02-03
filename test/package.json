@@ -6,13 +6,13 @@
   "scripts": {
     "build": "tsc",
     "clean": "rm -rf out",
-    "setup": "./setup.sh",
+    "install": "ln -s ../.. node_modules/validate-typescript",
     "test": "npm run build && ava out --verbose && npm run clean"
   },
   "author": "Grant Zietsman",
   "license": "MIT",
   "private": true,
   "dependencies": {
-    "ava": "^0.25.0"
+    "ava": "^1.2.0"
   }
 }

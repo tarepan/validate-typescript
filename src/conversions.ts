@@ -1,6 +1,11 @@
+import { isIso8601 } from './common';
 import { ConversionError } from './errors';
-import * as checks from './checks';
 
+/**
+ * Convert to integer if possible.
+ * @param {any} input Value to be converted.
+ * @throws {ConversionError} If conversion fails.
+ */
 export function toInt(input: any): number {
     let value = NaN;
 
@@ -17,10 +22,15 @@ export function toInt(input: any): number {
     return value;
 }
 
+/**
+ * Convert to number if possible.
+ * @param {any} input Value to be converted.
+ * @throws {ConversionError} If conversion fails.
+ * @todo add extra checks for (additional chars)
+ */
 export function toNumber(input: any): number {
     let value = NaN;
 
-    //todo add extra checks for (additional chars)
     if (typeof input === 'string' || typeof input === 'number') 
         value = Number(input);
     
@@ -31,6 +41,11 @@ export function toNumber(input: any): number {
     return value;
 }
 
+/**
+ * Convert to boolean if possible.
+ * @param {any} input Value to be converted.
+ * @throws {ConversionError} If conversion fails.
+ */
 export function toBoolean(input: any): boolean  {
     let value: boolean | undefined = undefined;
 
@@ -51,11 +66,16 @@ export function toBoolean(input: any): boolean  {
     return value;
 }
 
+/**
+ * Convert to ISO 8601 if possible.
+ * @param {any} input Value to be converted.
+ * @throws {ConversionError} If conversion fails.
+ */
 export function toIso8601(input: any): string {
     let value: string | undefined = undefined;
 
     if (typeof input === 'string') {
-        checks.isIso8601(input);
+        isIso8601(input);
     }
 
     if (typeof value === 'undefined') {
@@ -65,6 +85,11 @@ export function toIso8601(input: any): string {
     return value;
 }
 
+/**
+ * Convert to date if possible.
+ * @param {any} input Value to be converted.
+ * @throws {ConversionError} If conversion fails.
+ */
 export function toDate(input: any): Date  {
     let value: Date | undefined = undefined;
 

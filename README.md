@@ -1,49 +1,27 @@
-<!--![downloads](https://img.shields.io/github/downloads/dekryptonite/validate-typescript/total.svg)-->
+# Validate Typescript
 
-![github issues](https://img.shields.io/github/issues/dekryptonite/validate-typescript.svg)
-![npm downloads/week](https://img.shields.io/npm/dw/validate-typescript.svg)
-![npm downloads total](https://img.shields.io/npm/dt/validate-typescript.svg)
+Simple and extensible schema based validator with support for typescript typing.
 
-![npm license](https://img.shields.io/npm/l/validate-typescript.svg)
-![npm version](https://img.shields.io/npm/v/validate-typescript.svg)
-![github version](https://img.shields.io/github/package-json/v/dekryptonite/validate-typescript.svg)
+![test](demo.gif)
 
-![github code size](https://img.shields.io/github/languages/code-size/dekryptonite/validate-typescript.svg)
-![github contributors](https://img.shields.io/github/contributors/dekryptonite/validate-typescript.svg)
-![github commit activity](https://img.shields.io/github/commit-activity/y/dekryptonite/validate-typescript.svg)
-![github languages](https://img.shields.io/github/languages/top/dekryptonite/validate-typescript.svg)
+![npm version](https://img.shields.io/npm/v/validate-typescript.png?logo=npm)
+![npm license](https://img.shields.io/npm/l/validate-typescript.png?logo=npm)
+![npm downloads/week](https://img.shields.io/npm/dw/validate-typescript.png?logo=npm)
+<!--![npm downloads total](https://img.shields.io/npm/dt/validate-typescript.png)-->
 
-	
+![github issues](https://img.shields.io/github/issues/grant-zietsman/validate-typescript.png?logo=github)
+![github lsat commit](https://img.shields.io/github/last-commit/grant-zietsman/validate-typescript.png?logo=github)
+<!--![github commit activity](https://img.shields.io/github/commit-activity/y/grant-zietsman/validate-typescript.png?logo=github)-->
+<!--![github contributors](https://img.shields.io/github/contributors/grant-zietsman/validate-typescript.png?logo=github)-->
 
+![github languages](https://img.shields.io/github/languages/top/grant-zietsman/validate-typescript.png)
+![github code size](https://img.shields.io/github/languages/code-size/grant-zietsman/validate-typescript.png)
 
-
-
-
-
-
-
-
-
-
-
-
-# validate-typescript
-Extensible schema based validator that supports typescript typing.
-
-This package strives to meet the following criteria:
-
-- [lightweight](#example)
-- [inline](#example)
-- [simple](#example)
-- [strongly typed](#validators)
-- [extensible](#custom-validators)
-- [convertable](#converters)
-
-# Getting Started
+## Getting Started
 
 The example below represents a basic subset of the inline validations that can be applied.
 
-## Example
+### Example
 
 ```ts
 import { Email, ID, RegEx, Type, Options, Optional, Nullable, Alias, Any, All, validate } from 'validate-typescript';
@@ -97,13 +75,13 @@ try {
 }
 ```
 
-# Installation
+## Installation
 
 ```
 npm install validate-typescript
 ```
 
-# Imports
+## Imports
 
 The default import provides `validate`, all the `validators` and all the `extensions`:
 
@@ -111,17 +89,7 @@ The default import provides `validate`, all the `validators` and all the `extens
 import { ... } from 'validate-typescript';
 ```
 
-For additional (more specific) imports, use the following:
-
-```ts
-import { ... } from 'validate-typescript/validators';  // imported above
-import { ... } from 'validate-typescript/extensions';  // imported above
-import { ... } from 'validate-typescript/assertions';  // not imported above
-import { ... } from 'validate-typescript/conversions'; // not imported above
-import { ... } from 'validate-typescript/errors';      // not imported above
-```
-
-# Validators
+## Validators
 
 The following examples of `validate-typescript` schemas illustrate the different validation methods.
 
@@ -140,19 +108,19 @@ let schema = {
 }
 ```
 
-## Primative Validators
+### Primitive Validators
 
-Expects an exact primative type match.
+Expects an exact primitive type match.
 
 ```ts
 let schema = {
-    myNumber: Primative(Number),      // type: number
-    myString: Primative(String),      // type: string
+    myNumber: Primitive(Number),      // type: number
+    myString: Primitive(String),      // type: string
     // etc...
 }
 ```
 
-## Literal Validators
+### Literal Validators
 
 Expects an exact type and value match.
 
@@ -166,7 +134,7 @@ let schema = {
 }
 ```
 
-## Custom (Extension) Validators
+### Custom (Extension) Validators
 
 Expects custom convertions and assertions to be valid.
 
@@ -179,7 +147,7 @@ let schema = {
 }
 ```
 
-## Nested Object Validators
+### Nested Object Validators
 
 Expects a nested object that matches the nested schema.
 
@@ -195,7 +163,7 @@ let schema = {
 }
 ```
 
-## Array Validators
+### Array Validators
 
 Expects an array that matches the contents of the array schema.
 
@@ -212,7 +180,7 @@ let schema = {
 }
 ```
 
-## Options Validators
+### Options Validators
 
 Expects [any](#any-or-all-validators) or [all](#any-or-all-validators) of the validation options to match.
 
@@ -234,7 +202,7 @@ let schema = {
 }
 ```
 
-## Any or All Validators
+### Any or All Validators
 
 Any represents boolean-or of the validation options while all represents boolean-and.
 
@@ -250,7 +218,7 @@ let schema = {
     alsoAll: All([RegEx(/.+@gmail.com/), Email()])                               // type: number | string
 }
 ```
-## Validation
+### Validation
 
 **Note:** the return of `validate`, in this case `input`, will inherit the typescript typing of the schema, thus strongly-typed.
 
@@ -263,7 +231,7 @@ try {
 }
 ```
 
-## Assertions
+### Assertions
 
 Assertions allow enforcing of basic validation conditions and form the atomic building blocks of custom validators. Upon failure, assertions throw an `AssertionError`.
 
@@ -271,7 +239,7 @@ Assertions allow enforcing of basic validation conditions and form the atomic bu
 
 Assertions are intended to be extended.
 
-### Typed Assertions
+#### Typed Assertions
 
 |Assertion|Description|
 |:-|:-|
@@ -286,14 +254,14 @@ Assertions are intended to be extended.
 |isObject|Asserts object type input.|
 |isUndefined|Asserts undefined type input.|
 
-### Numeric Assertions
+#### Numeric Assertions
 
 |Assertion|Description|
 |:-|:-|
 |isInt|Asserts integer input.|
 |isFloat|Asserts float input.|
 
-### Operational Assertions
+#### Operational Assertions
 
 |Assertion|Description|
 |:-|:-|
@@ -303,14 +271,14 @@ Assertions are intended to be extended.
 |isGreaterThanOrEqualTo|Asserts greater than or equal to relation (>=) of two inputs.|
 |isLessThanOrEqualTo|Asserts less than or equal to relation (<=) of two inputs.|
 
-### Misc Assertions
+#### Misc Assertions
 
 |Assertion|Description|
 |:-|:-|
 |isEqual|Asserts typed equality (===) of two inputs.|
 |isRegEx|Asserts RegExp matching input.|
 
-## Converters
+### Converters
 
 All converters attempt to convert the input to a specific type and throw a `ConversionError` if the conversion fails.
 
@@ -322,7 +290,7 @@ Converters are intended to be extended.
 |toNumber| `number` | `number`, `string` |Converts any number|
 |toBoolean| `boolean` | `boolean`, `string` |Converts 'true' and 'false' (needs updating)|
 
-## Errors
+### Errors
 
 Custom validation errors are implemented. It is ulikely that you will need to extend these but there may be future extensions.
 
@@ -334,11 +302,11 @@ Custom validation errors are implemented. It is ulikely that you will need to ex
 
 For example, supporting JSON formatted validation errors for easier parsing and logging.
 
-## Custom Validators (Extensions)
+### Custom Validators (Extensions)
 
 Validators can be customized using converters, assertions as well as other custom validators (extensions). Upon failure, validators throw a `ValidationError`.
 
-### Alias
+#### Alias
 
 Aliasing is a method of aliasing a custom validator, possibly with inputs.
 
@@ -350,7 +318,7 @@ export function ZaPhoneNumber() {
 }
 ```
 
-### ID
+#### ID
 
 This example illustrates the use of both a converter and an assertion.
 
@@ -367,7 +335,7 @@ export function ID() {
 }
 ```
 
-### RegEx
+#### RegEx
 
 This example illustrates only the use of assertions.
 
@@ -383,11 +351,3 @@ export function RegEx(regEx: RegExp) {
     }, RegEx.name);
 }
 ```
-
-## Compatibility
-
-This project targets ES5 (using libraries es2017 and dom).
-
-## Recommendations
-
-TODO: complete

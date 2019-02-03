@@ -4,7 +4,7 @@
 export const Validator = Symbol("validator") as symbol;
 
 /**
- * Tags a metadata to a function validator
+ * Tags additional metadata to a function validator
  */
 export const Metadata = Symbol("metadata") as symbol;
 
