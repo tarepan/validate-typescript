@@ -1,5 +1,5 @@
 import { validate, Type, Primitive, Optional, ValidationOptions } from "validate-typescript"
-import { test } from "ava"
+import test from "ava"
 
 function gen_test_vectors(schema: any, vector: any[], pass_vector: number[]) {
     const result = {
