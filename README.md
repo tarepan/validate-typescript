@@ -1,5 +1,9 @@
 # Validate Typescript
 
+Simple and extensible schema based validator with support for typescript typing.
+
+![test](demo.gif)
+
 ![npm version](https://img.shields.io/npm/v/validate-typescript.png?logo=npm)
 ![npm license](https://img.shields.io/npm/l/validate-typescript.png?logo=npm)
 ![npm downloads/week](https://img.shields.io/npm/dw/validate-typescript.png?logo=npm)
@@ -12,8 +16,6 @@
 
 ![github languages](https://img.shields.io/github/languages/top/grant-zietsman/validate-typescript.png)
 ![github code size](https://img.shields.io/github/languages/code-size/grant-zietsman/validate-typescript.png)
-
-Simple and extensible schema based validator with support for typescript typing.
 
 ## Getting Started
 
@@ -87,16 +89,6 @@ The default import provides `validate`, all the `validators` and all the `extens
 import { ... } from 'validate-typescript';
 ```
 
-For additional (more specific) imports, use the following:
-
-```ts
-import { ... } from 'validate-typescript/validators';  // imported above
-import { ... } from 'validate-typescript/extensions';  // imported above
-import { ... } from 'validate-typescript/assertions';  // not imported above
-import { ... } from 'validate-typescript/conversions'; // not imported above
-import { ... } from 'validate-typescript/errors';      // not imported above
-```
-
 ## Validators
 
 The following examples of `validate-typescript` schemas illustrate the different validation methods.
@@ -116,14 +108,14 @@ let schema = {
 }
 ```
 
-### Primative Validators
+### Primitive Validators
 
-Expects an exact primative type match.
+Expects an exact primitive type match.
 
 ```ts
 let schema = {
-    myNumber: Primative(Number),      // type: number
-    myString: Primative(String),      // type: string
+    myNumber: Primitive(Number),      // type: number
+    myString: Primitive(String),      // type: string
     // etc...
 }
 ```
@@ -359,7 +351,3 @@ export function RegEx(regEx: RegExp) {
     }, RegEx.name);
 }
 ```
-
-### Recommendations
-
-TODO: complete
