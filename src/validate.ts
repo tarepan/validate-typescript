@@ -1,6 +1,6 @@
 import * as assert  from './assertions';
 import * as sym from './symbols';
-import { objectType, isUndefined } from './common';
+import { objectType, isUndefined, isNull } from './common';
 import { ValidatorError, ValidationError, NotMatchAnyError, MultipleValidationError } from './errors';
 import { ValidationOptions, Any } from './validators';
 import { INVERT } from './assertions';
@@ -26,7 +26,7 @@ import { INVERT } from './assertions';
 export function ValidateObject<T>(schema: T, value: any, property: string): T {
 
     // Null Validation
-    if (schema === null) {
+    if (isNull(schema)) {
         Null(schema, value, property);
         return value;
     }
