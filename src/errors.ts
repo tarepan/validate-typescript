@@ -2,9 +2,22 @@ import chalk from "chalk";
 import { objectToString } from "./common";
 
 /**
+ * Super base class for `extends Error` TS issue
+ * https://github.com/grant-zietsman/validate-typescript/issues/5
+ */
+class ErrorInternal {
+  name: string;
+  message: string;
+  constructor(message: string = "") {
+    this.name = "validate-typescript_ErrorInternal";
+    this.message = message;
+  }
+}
+
+/**
  * Base class from which validation errors are derived.
  */
-export abstract class ValidationError extends Error {
+export abstract class ValidationError extends ErrorInternal {
   constructor() {
     super();
     this.message = "Validate TypeScript";
@@ -108,10 +121,10 @@ export class ValidatorError extends ValidationError {
 
   /**
    * Explanitory validator error string.
-   * @param {number} count Error stack depth, used for indenting (string formatting).
-   * @returns {string} Formatted validator error reason.
+   * @param count - Error stack depth, used for indenting (string formatting).
+   * @returns Formatted validator error reason.
    */
-  public reason(count: number = 0) {
+  public reason(count: number = 0): string {
     let response = this.indent(
       count,
       `${chalk.blueBright(
