@@ -1,3 +1,4 @@
+import { Either, tryCatch } from "fp-ts/lib/Either";
 import * as assert from "./assertions";
 import * as sym from "./symbols";
 import { objectType, isUndefined, isNull } from "./common";
@@ -388,4 +389,29 @@ export function validate<T>(
   }
 
   return value;
+}
+
+/**
+ * Validates a variable according to a schema.
+ * @param schema - The validation schema.
+ * @param value - Variable (value) to be validated.
+ * @param name - Name of the variable (value) being validated, for detailed logging.
+ * @param {Function(string)} log Validation error logger, takes a string input.
+ * @returns Either monad which contain type-checked value or Error
+ */
+export function validateE<T>(
+  schema: T,
+  value: any,
+  name: string = "",
+  log: any = console.log
+): Either<Error, T> {
+  return tryCatch(
+    () => ValidateRecursive(schema, value, name),
+    e => e as Error
+  );
+  // if (error instanceof ValidationError) {
+  //   if (!isUndefined(log)) {
+  //     log("\n" + error.trace + "\n");
+  //   }
+  // }
 }
