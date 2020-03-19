@@ -7,10 +7,12 @@ Simple and extensible schema based validator with support for typescript typing.
 ![npm version](https://img.shields.io/npm/v/validate-typescript.png?logo=npm)
 ![npm license](https://img.shields.io/npm/l/validate-typescript.png?logo=npm)
 ![npm downloads/week](https://img.shields.io/npm/dw/validate-typescript.png?logo=npm)
+
 <!--![npm downloads total](https://img.shields.io/npm/dt/validate-typescript.png)-->
 
 ![github issues](https://img.shields.io/github/issues/grant-zietsman/validate-typescript.png?logo=github)
 ![github lsat commit](https://img.shields.io/github/last-commit/grant-zietsman/validate-typescript.png?logo=github)
+
 <!--![github commit activity](https://img.shields.io/github/commit-activity/y/grant-zietsman/validate-typescript.png?logo=github)-->
 <!--![github contributors](https://img.shields.io/github/contributors/grant-zietsman/validate-typescript.png?logo=github)-->
 
@@ -93,7 +95,7 @@ import { ... } from 'validate-typescript';
 
 The following examples of `validate-typescript` schemas illustrate the different validation methods.
 
-**Note:** the comment `// type: TypeName` following the validator explicitly specifies the resultant typescript type inferred by the typescipt transpiler. This relates back to the *strongly typed* criteria.
+**Note:** the comment `// type: TypeName` following the validator explicitly specifies the resultant typescript type inferred by the typescipt transpiler. This relates back to the _strongly typed_ criteria.
 
 ## Type Validators
 
@@ -101,11 +103,11 @@ Expects an exact type match.
 
 ```ts
 let schema = {
-    myNumber: Type(Number),      // type: Number
-    myString: Type(String),      // type: String
-    myCustom: Type(CustomClass), // type: CustomClass
-    // etc...
-}
+  myNumber: Type(Number), // type: Number
+  myString: Type(String), // type: String
+  myCustom: Type(CustomClass) // type: CustomClass
+  // etc...
+};
 ```
 
 ### Primitive Validators
@@ -114,10 +116,10 @@ Expects an exact primitive type match.
 
 ```ts
 let schema = {
-    myNumber: Primitive(Number),      // type: number
-    myString: Primitive(String),      // type: string
-    // etc...
-}
+  myNumber: Primitive(Number), // type: number
+  myString: Primitive(String) // type: string
+  // etc...
+};
 ```
 
 ### Literal Validators
@@ -126,12 +128,12 @@ Expects an exact type and value match.
 
 ```ts
 let schema = {
-    number49:    49,              // type: number
-    myCountry:   'South Africa',  // type: string
-    dontDefine:  undefined,       // type: undefined
-    allwaysNull: null,            // type: null
-    // etc...
-}
+  number49: 49, // type: number
+  myCountry: "South Africa", // type: string
+  dontDefine: undefined, // type: undefined
+  allwaysNull: null // type: null
+  // etc...
+};
 ```
 
 ### Custom (Extension) Validators
@@ -140,11 +142,11 @@ Expects custom convertions and assertions to be valid.
 
 ```ts
 let schema = {
-    myEmail:  Email(),      // type: string
-    sqlId:    ID(),         // type: number
-    comeText: RegEx(/abc/), // type: string
-    // etc...
-}
+  myEmail: Email(), // type: string
+  sqlId: ID(), // type: number
+  comeText: RegEx(/abc/) // type: string
+  // etc...
+};
 ```
 
 ### Nested Object Validators
@@ -218,16 +220,17 @@ let schema = {
     alsoAll: All([RegEx(/.+@gmail.com/), Email()])                               // type: number | string
 }
 ```
+
 ### Validation
 
 **Note:** the return of `validate`, in this case `input`, will inherit the typescript typing of the schema, thus strongly-typed.
 
 ```ts
 try {
-    const input = validate(schema, input);
-    console.log(input); // no validation error
+  const input = validate(schema, input);
+  console.log(input); // no validation error
 } catch (error) {
-    console.log(error); // validation error
+  console.log(error); // validation error
 }
 ```
 
@@ -241,42 +244,42 @@ Assertions are intended to be extended.
 
 #### Typed Assertions
 
-|Assertion|Description|
-|:-|:-|
-|isSameType|Assert type equality of two inputs.|
-|isSameTypeName|Asserts type name equality of two inputs.|
-|isSymbol|Asserts symbol type input.|
-|isBoolean|Asserts boolean type input.|
-|isString|Asserts string type input.|
-|isNumber|Asserts number type input.|
-|isArray|Asserts array type input.|
-|isNull|Asserts null type input.|
-|isObject|Asserts object type input.|
-|isUndefined|Asserts undefined type input.|
+| Assertion      | Description                               |
+| :------------- | :---------------------------------------- |
+| isSameType     | Assert type equality of two inputs.       |
+| isSameTypeName | Asserts type name equality of two inputs. |
+| isSymbol       | Asserts symbol type input.                |
+| isBoolean      | Asserts boolean type input.               |
+| isString       | Asserts string type input.                |
+| isNumber       | Asserts number type input.                |
+| isArray        | Asserts array type input.                 |
+| isNull         | Asserts null type input.                  |
+| isObject       | Asserts object type input.                |
+| isUndefined    | Asserts undefined type input.             |
 
 #### Numeric Assertions
 
-|Assertion|Description|
-|:-|:-|
-|isInt|Asserts integer input.|
-|isFloat|Asserts float input.|
+| Assertion | Description            |
+| :-------- | :--------------------- |
+| isInt     | Asserts integer input. |
+| isFloat   | Asserts float input.   |
 
 #### Operational Assertions
 
-|Assertion|Description|
-|:-|:-|
-|isEqualTo|Asserts equality (==) of two inputs.|
-|isGreaterThan|Asserts greater than relation (>) of two inputs.|
-|isLessThan|Asserts less than relation (<) of two inputs.|
-|isGreaterThanOrEqualTo|Asserts greater than or equal to relation (>=) of two inputs.|
-|isLessThanOrEqualTo|Asserts less than or equal to relation (<=) of two inputs.|
+| Assertion              | Description                                                   |
+| :--------------------- | :------------------------------------------------------------ |
+| isEqualTo              | Asserts equality (==) of two inputs.                          |
+| isGreaterThan          | Asserts greater than relation (>) of two inputs.              |
+| isLessThan             | Asserts less than relation (<) of two inputs.                 |
+| isGreaterThanOrEqualTo | Asserts greater than or equal to relation (>=) of two inputs. |
+| isLessThanOrEqualTo    | Asserts less than or equal to relation (<=) of two inputs.    |
 
 #### Misc Assertions
 
-|Assertion|Description|
-|:-|:-|
-|isEqual|Asserts typed equality (===) of two inputs.|
-|isRegEx|Asserts RegExp matching input.|
+| Assertion | Description                                 |
+| :-------- | :------------------------------------------ |
+| isEqual   | Asserts typed equality (===) of two inputs. |
+| isRegEx   | Asserts RegExp matching input.              |
 
 ### Converters
 
@@ -284,11 +287,11 @@ All converters attempt to convert the input to a specific type and throw a `Conv
 
 Converters are intended to be extended.
 
-|Conversion|Output Type|Input Types|Description|
-|:-|:-:|:-:|:-|
-|toInt| `number` | `number`, `string` |Converts only integers (needs updating)|
-|toNumber| `number` | `number`, `string` |Converts any number|
-|toBoolean| `boolean` | `boolean`, `string` |Converts 'true' and 'false' (needs updating)|
+| Conversion | Output Type |     Input Types     | Description                                  |
+| :--------- | :---------: | :-----------------: | :------------------------------------------- |
+| toInt      |  `number`   | `number`, `string`  | Converts only integers (needs updating)      |
+| toNumber   |  `number`   | `number`, `string`  | Converts any number                          |
+| toBoolean  |  `boolean`  | `boolean`, `string` | Converts 'true' and 'false' (needs updating) |
 
 ### Errors
 
@@ -311,10 +314,10 @@ Validators can be customized using converters, assertions as well as other custo
 Aliasing is a method of aliasing a custom validator, possibly with inputs.
 
 ```ts
-import { RegEx, Alias } from 'validate-typescript';
+import { RegEx, Alias } from "validate-typescript";
 
 export function ZaPhoneNumber() {
-    return Alias(RegEx(/^((\+27|0)\d{9})$/), ZaPhoneNumber.name);
+  return Alias(RegEx(/^((\+27|0)\d{9})$/), ZaPhoneNumber.name);
 }
 ```
 
@@ -323,15 +326,15 @@ export function ZaPhoneNumber() {
 This example illustrates the use of both a converter and an assertion.
 
 ```ts
-import { Validator } from 'validate-typescript';
-import * as convert from 'validate-typescript/conversions';
+import { Validator } from "validate-typescript";
+import * as convert from "validate-typescript/conversions";
 
 export function ID() {
-    return Validator((input: any): number => {
-        const value = convert.toInt(input);
-        assert.isGreaterThan(0, value);
-        return value;
-    }, ID.name);
+  return Validator((input: any): number => {
+    const value = convert.toInt(input);
+    assert.isGreaterThan(0, value);
+    return value;
+  }, ID.name);
 }
 ```
 
@@ -340,14 +343,14 @@ export function ID() {
 This example illustrates only the use of assertions.
 
 ```ts
-import { Validator } from 'validate-typescript';
-import * as assert from 'validate-typescript/assertions';
+import { Validator } from "validate-typescript";
+import * as assert from "validate-typescript/assertions";
 
 export function RegEx(regEx: RegExp) {
-    return Validator((input: any): string => {
-        assert.isString(input);
-        assert.isRegEx(regEx, input);
-        return input;
-    }, RegEx.name);
+  return Validator((input: any): string => {
+    assert.isString(input);
+    assert.isRegEx(regEx, input);
+    return input;
+  }, RegEx.name);
 }
 ```

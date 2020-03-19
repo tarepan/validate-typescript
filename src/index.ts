@@ -1,2 +1,2 @@
-export * from './validators';
-export { validate } from './validate';
+export * from "./validators";
+export { validate } from "./validate";

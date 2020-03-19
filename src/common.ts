@@ -4,13 +4,11 @@
  * @returns {string|undefined|null} Object type.
  */
 export function objectType(obj: {}): string | undefined | null {
-    
-    if (isNullOrUndefined(obj)) {
-        return obj;
-    } else if (isNullOrUndefined(obj.constructor)) {
-        return obj.constructor;
-    }    
-    else return obj.constructor.name;
+  if (isNullOrUndefined(obj)) {
+    return obj;
+  } else if (isNullOrUndefined(obj.constructor)) {
+    return obj.constructor;
+  } else return obj.constructor.name;
 }
 
 /**
@@ -19,7 +17,7 @@ export function objectType(obj: {}): string | undefined | null {
  * @returns {string} Stringified object.
  */
 export function objectToString(obj: any): string {
-    return JSON.stringify(obj, null, '  ');
+  return JSON.stringify(obj, null, "  ");
 }
 
 /**
@@ -27,8 +25,8 @@ export function objectToString(obj: any): string {
  * @param {any} value Value to be checked.
  * @returns {boolean} Whether the value is undefined.
  */
-export function isUndefined(value: any) : value is undefined {
-    return (typeof value === 'undefined');
+export function isUndefined(value: any): value is undefined {
+  return typeof value === "undefined";
 }
 
 /**
@@ -36,8 +34,8 @@ export function isUndefined(value: any) : value is undefined {
  * @param {any} value Value to be checked.
  * @returns {boolean} Whether the value is null.
  */
-export function isNull(value: any) : value is null {
-    return (value === null);
+export function isNull(value: any): value is null {
+  return value === null;
 }
 
 /**
@@ -45,8 +43,8 @@ export function isNull(value: any) : value is null {
  * @param {any} value Value to be checked.
  * @returns {boolean} Whether the value is null or undefined.
  */
-export function isNullOrUndefined(value: any) : value is null | undefined {
-    return isUndefined(value) || isNull(value);
+export function isNullOrUndefined(value: any): value is null | undefined {
+  return isUndefined(value) || isNull(value);
 }
 
 /**
@@ -55,6 +53,6 @@ export function isNullOrUndefined(value: any) : value is null | undefined {
  * @returns {boolean} Whether the value is ISO 8601 formatted.
  */
 export function isIso8601(value: string): boolean {
-    let utcMs = Date.parse(value);
-    return (!Number.isNaN(utcMs) && (value === (new Date(utcMs)).toISOString()));
+  let utcMs = Date.parse(value);
+  return !Number.isNaN(utcMs) && value === new Date(utcMs).toISOString();
 }
