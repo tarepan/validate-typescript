@@ -362,12 +362,12 @@ function ValidateRecursive<T>(schema: T, value: any, property: string): T {
 
 /**
  * Validates a variable (value) according to a validation schema (type T).
- * @param {T} schema The validation schema.
- * @param {any} value Variable (value) to be validated.
- * @param {string} name Name of the variable (value) being validated, for detailed logging.
+ * @param schema - The validation schema.
+ * @param value - Variable (value) to be validated.
+ * @param name - Name of the variable (value) being validated, for detailed logging.
  * @param {Function(string)} log Validation error logger, takes a string input.
- * @returns {T} The original value cast to type T if validation succeeded, else an error is
- * thrown.
+ * @returns The original value cast to type T if validation succeeded.
+ * @throws Validation error.
  */
 export function validate<T>(
   schema: T,
