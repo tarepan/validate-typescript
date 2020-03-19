@@ -340,25 +340,29 @@ export function Unknown<T>(schema: T, value: any, property: string): T {
  * thrown.
  */
 function ValidateRecursive<T>(schema: T, value: any, property: string): T {
-  if (typeof schema === "object") {
-    value = ValidateObject(schema, value, property);
-  } else if (typeof schema === "function") {
-    value = ValidateFunction(schema, value, property);
-  } else if (typeof schema === "string") {
-    value = LiteralString(schema, value, property);
-  } else if (typeof schema === "number") {
-    value = LiteralNumber(schema, value, property);
-  } else if (typeof schema === "boolean") {
-    value = LiteralBoolean(schema, value, property);
-  } else if (typeof schema === "symbol") {
-    value = LiteralSymbol(schema, value, property);
-  } else if (typeof schema === "undefined") {
-    value = Undefined(schema, value, property);
-  } else {
-    value = Unknown(schema, value, property);
+  switch (typeof schema) {
+    case "object":
+      return ValidateObject(schema, value, property);
+    case "function":
+      return ValidateFunction(schema, value, property);
+    case "string":
+      //@ts-ignore
+      return LiteralString(schema, value, property);
+    case "number":
+      //@ts-ignore
+      return LiteralNumber(schema, value, property);
+    case "boolean":
+      //@ts-ignore
+      return LiteralBoolean(schema, value, property);
+    case "symbol":
+      //@ts-ignore
+      return LiteralSymbol(schema, value, property);
+    case "undefined":
+      //@ts-ignore
+      return Undefined(schema, value, property);
+    default:
+      return Unknown(schema, value, property);
   }
-
-  return value;
 }
 
 /**
