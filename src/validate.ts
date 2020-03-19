@@ -37,6 +37,7 @@ export function ValidateObject<T>(schema: T, value: any, property: string): T {
   }
 
   // Array Validation
+  // @throw ValidatorError | MultipleValidationError (both extends ValidationError)
   if (Array.isArray(schema)) {
     // Ensure that the value is an array.
     try {
@@ -67,9 +68,10 @@ export function ValidateObject<T>(schema: T, value: any, property: string): T {
     if (array_error.child_errors.length > 0) {
       throw array_error;
     }
-
-    // Object Validation
-  } else {
+  }
+  // Object Validation
+  // @throw ValidatorError | MultipleValidationError (both extends ValidationError)
+  else {
     // Ensure that the value is an object.
     try {
       assert.isObject(value);
